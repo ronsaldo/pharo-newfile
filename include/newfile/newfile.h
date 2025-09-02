@@ -8,6 +8,13 @@ typedef void * NewFileHandle;
 
 typedef struct NewFile_s NewFile_t;
 
+typedef enum NewFileOpenMode_e
+{
+    NewFileOpenModeReadOnly = 0,
+    NewFileOpenModeReadWrite,
+    NewFileOpenModeAppend
+} NewFileOpenMode_t;
+
 typedef enum NewFileSeekMode_e
 {
     NewFileSeekModeSet = 0,
@@ -18,7 +25,7 @@ typedef enum NewFileSeekMode_e
 /**
  * Opens a file.
  */
-NewFile_t *newfile_open(const char *path, const char *mode);
+NewFile_t *newfile_open(const char *path, NewFileOpenMode_t mode);
 
 /*+
  * Closes the file
