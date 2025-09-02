@@ -3,4 +3,4 @@ set(PharoNewFiles_Sources
     Win32File.c
 )
 
-add_library(PharoNewFiles SHARED ${PharoNewFiles_Sources})
+add_library(PharoNewFile SHARED ${PharoNewFiles_Sources})
