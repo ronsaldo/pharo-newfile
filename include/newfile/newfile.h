@@ -4,6 +4,16 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef _WIN32
+#   ifdef PHARO_NEWFILE_BUILD
+#       define PHARO_NEWFILE_EXPORT __declspec(dllexport)
+#   else
+#       define PHARO_NEWFILE_EXPORT __declspec(dllimport)
+#   endif
+#else
+#   define PHARO_NEWFILE_EXPORT
+#endif
+
 typedef void * NewFileHandle;
 
 typedef struct NewFile_s NewFile_t;
@@ -32,31 +42,31 @@ typedef enum NewFileSeekMode_e
 /**
  * Opens a file.
  */
-NewFile_t *newfile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags);
+PHARO_NEWFILE_EXPORT NewFile_t *NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags);
 
 /*+
  * Closes the file
  */
-void newfile_close(NewFile_t *file);
+PHARO_NEWFILE_EXPORT void NewFile_close(NewFile_t *file);
 
 /*+
  * Seeks
  */
-void newfile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode);
+PHARO_NEWFILE_EXPORT void NewFile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode);
 
 /*+
  * Tell
  */
-int64_t newfile_tell(NewFile_t *file);
+PHARO_NEWFILE_EXPORT int64_t NewFile_tell(NewFile_t *file);
 
 /**
  * Read
  */
-int64_t newfile_read(NewFile_t *file, void * buffer, size_t bufferSize);
+PHARO_NEWFILE_EXPORT int64_t NewFile_read(NewFile_t *file, void * buffer, size_t bufferSize);
 
 /**
  * Write
  */
-int64_t newfile_write(NewFile_t *file, void * buffer, size_t bufferSize);
+PHARO_NEWFILE_EXPORT int64_t NewFile_write(NewFile_t *file, void * buffer, size_t bufferSize);
 
 #endif // PHARO_NEWFILE_H

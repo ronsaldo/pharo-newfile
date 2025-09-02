@@ -11,7 +11,7 @@ struct NewFile_s
 };
 
 NewFile_t *
-newfile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags)
+NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags)
 {
     int openFlags = 0;
     int openMode = 0644;
@@ -47,7 +47,7 @@ newfile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags)
 }
 
 void
-newfile_close(NewFile_t *file)
+NewFile_close(NewFile_t *file)
 {
     if(!file)
         return;
@@ -56,7 +56,7 @@ newfile_close(NewFile_t *file)
     free(file);
 }
 
-void newfile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode)
+void NewFile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode)
 {
     int whence = 0;
     switch(seekMode)
@@ -78,7 +78,7 @@ void newfile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode)
 }
 
 int64_t
-newfile_tell(NewFile_t *file)
+NewFile_tell(NewFile_t *file)
 {
     if(!file)
         return 0;
@@ -86,7 +86,7 @@ newfile_tell(NewFile_t *file)
 }
 
 int64_t
-newfile_read(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_read(NewFile_t *file, void * buffer, size_t bufferSize)
 {
     if(!file)
         return -1;
@@ -95,7 +95,7 @@ newfile_read(NewFile_t *file, void * buffer, size_t bufferSize)
 }
 
 int64_t
-newfile_write(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_write(NewFile_t *file, void * buffer, size_t bufferSize)
 {
     if(!file)
         return -1;
