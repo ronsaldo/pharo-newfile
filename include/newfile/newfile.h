@@ -1,0 +1,4 @@
+#ifndef PHARO_NEWFILE_H
+#define PHARO_NEWFILE_H
+
+#endif // PHARO_NEWFILE_H
