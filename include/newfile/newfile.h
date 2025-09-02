@@ -11,9 +11,16 @@ typedef struct NewFile_s NewFile_t;
 typedef enum NewFileOpenMode_e
 {
     NewFileOpenModeReadOnly = 0,
+    NewFileOpenModeWriteOnly,
     NewFileOpenModeReadWrite,
-    NewFileOpenModeAppend
 } NewFileOpenMode_t;
+
+typedef enum NewFileOpenFlags_e
+{
+    NewFileOpenFlagsCreate = 1<<0,
+    NewFileOpenFlagsTruncate = 1<<1,
+    NewFileOpenFlagsAppend = 1<<2,
+} NewFileOpenFlags_t;
 
 typedef enum NewFileSeekMode_e
 {
@@ -25,7 +32,7 @@ typedef enum NewFileSeekMode_e
 /**
  * Opens a file.
  */
-NewFile_t *newfile_open(const char *path, NewFileOpenMode_t mode);
+NewFile_t *newfile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags);
 
 /*+
  * Closes the file
