@@ -54,12 +54,17 @@ NewFile >> primitiveClose [
 
 { #category : 'initialization' }
 NewFile >> readInto: buffer [
-	^ self readInto: buffer withSize: buffer size
+	^ self readInto: buffer offset: 0 withSize: buffer size
 ]
 
 { #category : 'initialization' }
-NewFile >> readInto: buffer withSize: bufferSize [
-	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferSize))
+NewFile >> readInto: buffer offset: bufferOffset withSize: readSize [
+	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
+]
+
+{ #category : 'initialization' }
+NewFile >> readInto: buffer withSize: readSize [
+	^ self readInto: buffer offset: 0 withSize: readSize
 ]
 
 { #category : 'initialization' }
@@ -79,10 +84,15 @@ NewFile >> tell [
 
 { #category : 'initialization' }
 NewFile >> writeFrom: dataBuffer [
-	^ self writeFrom: dataBuffer withSize: dataBuffer size
+	^ self writeFrom: dataBuffer offset: 0 withSize: dataBuffer size
+]
+
+{ #category : 'initialization' }
+NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
+	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
 ]
 
 { #category : 'initialization' }
 NewFile >> writeFrom: buffer withSize: bufferSize [
-	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferSize))
+	^ self writeFrom: buffer offset: 0 withSize: bufferSize
 ]
