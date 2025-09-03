@@ -11,7 +11,7 @@ struct NewFile_s
 };
 
 NewFile_t *
-NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags)
+NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDisposition_t creationDisposition, NewFileOpenFlags_t flags)
 {
     int openFlags = 0;
     int openMode = 0644;
@@ -30,12 +30,28 @@ NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags)
         return NULL;
     }
 
-    if(flags & NewFileOpenFlagsCreate)
-        openFlags |= O_CREAT;
-    if(flags & NewFileOpenFlagsTruncate)
-        openFlags |= O_TRUNC;
     if(flags & NewFileOpenFlagsAppend)
         openFlags |= O_APPEND;
+
+    switch(creationDisposition)
+    {
+    case NewFileCreationDispositionCreateNew:
+        openFlags |= O_CREAT | O_EXCL;
+        break;
+    case NewFileCreationDispositionCreateAlways:
+        openFlags |= O_CREAT | O_TRUNC;
+        break;
+    case NewFileCreationDispositionOpenExisting:
+        break;
+    case NewFileCreationDispositionOpenAlways:
+        openFlags |= O_CREAT;
+        break;
+    case NewFileCreationDispositionTruncateExisting:
+        openFlags |= O_TRUNC;
+        break;
+    default:
+        break;
+    }
 
     int fd = open(path, openFlags, openMode);
     if(fd < 0)
