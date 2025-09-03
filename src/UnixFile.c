@@ -2,6 +2,7 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
 
@@ -70,6 +71,19 @@ NewFile_close(NewFile_t *file)
 
     close(file->fileDescriptor);
     free(file);
+}
+
+int64_t
+NewFile_getSize(NewFile_t *file)
+{
+    if(!file)
+        return -1;
+
+    struct stat s;
+    if(fstat(file->fileDescriptor, &s))
+        return -1;
+
+    return s.st_size;
 }
 
 void NewFile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode)
