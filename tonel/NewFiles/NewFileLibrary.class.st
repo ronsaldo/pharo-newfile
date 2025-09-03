@@ -10,3 +10,9 @@ NewFileLibrary >> macLibraryName [
 	^ FFIMacLibraryFinder
 		findAnyLibrary: #('libPharoNewFile.dylib')
 ]
+
+{ #category : 'accessing - platform' }
+NewFileLibrary >> win32LibraryName [
+	^ FFIWindowsLibraryFinder findAnyLibrary: #('PharoNewFile.dll')
+	
+]
