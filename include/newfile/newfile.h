@@ -25,11 +25,19 @@ typedef enum NewFileOpenMode_e
     NewFileOpenModeReadWrite,
 } NewFileOpenMode_t;
 
+typedef enum NewFileCreationDisposition_e
+{
+    NewFileCreationDispositionCreateNew = 1,
+    NewFileCreationDispositionCreateAlways,
+    NewFileCreationDispositionOpenExisting,
+    NewFileCreationDispositionOpenAlways,
+    NewFileCreationDispositionTruncateExisting,
+} NewFileCreationDisposition_t;
+
 typedef enum NewFileOpenFlags_e
 {
-    NewFileOpenFlagsCreate = 1<<0,
-    NewFileOpenFlagsTruncate = 1<<1,
-    NewFileOpenFlagsAppend = 1<<2,
+    NewFileOpenFlagsNone = 0,
+    NewFileOpenFlagsAppend = 1<<0,
 } NewFileOpenFlags_t;
 
 typedef enum NewFileSeekMode_e
@@ -42,12 +50,17 @@ typedef enum NewFileSeekMode_e
 /**
  * Opens a file.
  */
-PHARO_NEWFILE_EXPORT NewFile_t *NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileOpenFlags_t flags);
+PHARO_NEWFILE_EXPORT NewFile_t *NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDisposition_t creationDisposition, NewFileOpenFlags_t flags);
 
 /*+
  * Closes the file
  */
 PHARO_NEWFILE_EXPORT void NewFile_close(NewFile_t *file);
+
+/*+
+ * Get file size
+  */
+PHARO_NEWFILE_EXPORT int64_t NewFile_getSize(NewFile_t *file);
 
 /*+
  * Seeks
