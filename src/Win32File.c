@@ -154,4 +154,38 @@ NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t 
     return writtenBytes;
 }
 
+PHARO_NEWFILE_EXPORT int64_t
+NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset)
+{
+    if(!file)
+        return -1;
+
+    OVERLAPPED overlapped = {0};
+    overlapped.Offset = (DWORD)offset;
+    overlapped.OffsetHigh = (DWORD)(offset >> 32);
+
+    DWORD readBytes = 0;
+    if(!ReadFile(file->fileHandle, (char*)buffer + bufferOffset, (DWORD)readSize, &readBytes, &overlapped))
+        return -1;
+    return readBytes;
+}
+
+PHARO_NEWFILE_EXPORT int64_t
+NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset)
+{
+    if(!file)
+        return -1;
+
+    OVERLAPPED overlapped = {0};
+    overlapped.Offset = (DWORD)offset;
+    overlapped.OffsetHigh = (DWORD)(offset >> 32);
+
+    DWORD writtenBytes = 0;
+    if(!WriteFile(file->fileHandle, (const char*)buffer + bufferOffset, (DWORD)writeSize, &writtenBytes, &overlapped))
+        return -1;
+
+    return writtenBytes;
+}
+
+
 #endif
