@@ -27,7 +27,7 @@ NewFile class >> openReadOnly: path [
 
 { #category : 'initialization' }
 NewFile >> close [
-	^ self ffiCall: #(NewFile NewFile_close(self))
+	^ self primitiveClose
 ]
 
 { #category : 'accessing' }
@@ -45,6 +45,11 @@ NewFile >> position [
 { #category : 'accessing' }
 NewFile >> position: aPosition [
 	^ self seek: aPosition mode: NewFileSeekModeSet
+]
+
+{ #category : 'initialization' }
+NewFile >> primitiveClose [
+	^ self ffiCall: #(NewFile NewFile_close(self))
 ]
 
 { #category : 'initialization' }
