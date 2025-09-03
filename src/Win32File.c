@@ -130,25 +130,25 @@ NewFile_tell(NewFile_t *file)
 }
 
 PHARO_NEWFILE_EXPORT int64_t
-NewFile_read(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_read(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize)
 {
     if(!file)
         return -1;
 
     DWORD readBytes = 0;
-    if(!ReadFile(file->fileHandle, buffer, (DWORD)bufferSize, &readBytes, NULL))
+    if(!ReadFile(file->fileHandle, (char*)buffer + bufferOffset, (DWORD)readSize, &readBytes, NULL))
         return -1;
     return readBytes;
 }
 
 PHARO_NEWFILE_EXPORT int64_t
-NewFile_write(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize)
 {
     if(!file)
         return -1;
 
     DWORD writtenBytes = 0;
-    if(!WriteFile(file->fileHandle, buffer, (DWORD)bufferSize, &writtenBytes, NULL))
+    if(!WriteFile(file->fileHandle, (const char*)buffer + bufferOffset, (DWORD)writeSize, &writtenBytes, NULL))
         return -1;
 
     return writtenBytes;
