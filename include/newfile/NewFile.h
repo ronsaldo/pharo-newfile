@@ -75,11 +75,21 @@ PHARO_NEWFILE_EXPORT int64_t NewFile_tell(NewFile_t *file);
 /**
  * Read
  */
-PHARO_NEWFILE_EXPORT int64_t NewFile_read(NewFile_t *file, void * buffer, size_t bufferSize);
+PHARO_NEWFILE_EXPORT int64_t NewFile_read(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize);
 
 /**
  * Write
  */
-PHARO_NEWFILE_EXPORT int64_t NewFile_write(NewFile_t *file, void * buffer, size_t bufferSize);
+PHARO_NEWFILE_EXPORT int64_t NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize);
+
+/**
+ * Read at offset
+ */
+PHARO_NEWFILE_EXPORT int64_t NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset);
+
+/**
+ * Write
+ */
+PHARO_NEWFILE_EXPORT int64_t NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset);
 
 #endif // PHARO_NEWFILE_H

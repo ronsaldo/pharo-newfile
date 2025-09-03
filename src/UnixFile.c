@@ -116,22 +116,39 @@ NewFile_tell(NewFile_t *file)
 }
 
 int64_t
-NewFile_read(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_read(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize)
 {
     if(!file)
         return -1;
 
-    return read(file->fileDescriptor, buffer, bufferSize);
+    return read(file->fileDescriptor, (char*)buffer + bufferOffset, readSize);
 }
 
 int64_t
-NewFile_write(NewFile_t *file, void * buffer, size_t bufferSize)
+NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize)
 {
     if(!file)
         return -1;
 
-    return write(file->fileDescriptor, buffer, bufferSize);
+    return write(file->fileDescriptor, (const char*)buffer + bufferOffset, writeSize);
 }
 
+int64_t
+NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset)
+{
+    if(!file)
+        return -1;
+
+    return pread(file->fileDescriptor, (char*)buffer + bufferOffset, readSize, offset);
+}
+
+int64_t
+NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset)
+{
+    if(!file)
+        return -1;
+
+    return pwrite(file->fileDescriptor, (const char*)buffer + bufferOffset, writeSize, offset);
+}
 
 #endif
