@@ -76,3 +76,13 @@ NewFile >> size [
 NewFile >> tell [
 	^ self ffiCall: #(int64 NewFile_tell(self))
 ]
+
+{ #category : 'initialization' }
+NewFile >> writeFrom: dataBuffer [
+	^ self writeFrom: dataBuffer withSize: dataBuffer size
+]
+
+{ #category : 'initialization' }
+NewFile >> writeFrom: buffer withSize: bufferSize [
+	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferSize))
+]
