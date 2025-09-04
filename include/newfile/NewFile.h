@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 #   ifdef PHARO_NEWFILE_BUILD
@@ -72,10 +73,15 @@ PHARO_NEWFILE_EXPORT int64_t NewFile_getSize(NewFile_t *file);
  */
 PHARO_NEWFILE_EXPORT void NewFile_seek(NewFile_t *file, int64_t offset, NewFileSeekMode_t seekMode);
 
-/*+
- * Tell
+/**
+ * Tell the current file position.
  */
 PHARO_NEWFILE_EXPORT int64_t NewFile_tell(NewFile_t *file);
+
+/**
+ * Sets the file size.
+ */
+PHARO_NEWFILE_EXPORT bool NewFile_truncate(NewFile_t *file, uint64_t newFileSize);
 
 /**
  * Read

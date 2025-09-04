@@ -137,6 +137,30 @@ NewFile_tell(NewFile_t *file)
     return filePointerPosition.QuadPart;
 }
 
+PHARO_NEWFILE_EXPORT bool
+NewFile_truncate(NewFile_t *file, uint64_t newFileSize)
+{
+    if(!file)
+        return false;
+
+    LARGE_INTEGER largeIntegerOffset = {0};
+    largeIntegerOffset.QuadPart = newFileSize;
+    LARGE_INTEGER oldFileOffset = {0};
+
+    // Move the file pointer to the new ending.
+    if(!SetFilePointerEx(file->fileHandle, largeIntegerOffset, &oldFileOffset, FILE_BEGIN))
+        return -1;
+
+    // Set the new end of file.
+    bool result = SetEndOfFile(file->fileHandle);
+
+    // Restore the file pointer.
+    if(SetFilePointerEx(file->fileHandle, oldFileOffset, NULL, FILE_BEGIN))
+        return -1;
+
+    return result;
+}
+
 PHARO_NEWFILE_EXPORT int64_t
 NewFile_read(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize)
 {
