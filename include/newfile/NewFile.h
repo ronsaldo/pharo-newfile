@@ -53,6 +53,12 @@ typedef enum NewFileMemMapProtection_e
     NewFileMemMapProtectionReadOnly = 0,
     NewFileMemMapProtectionReadWrite,
 } NewFileMemMapProtection_t;
+
+/**
+ * Deletes a file
+ */
+PHARO_NEWFILE_EXPORT bool NewFile_deleteFile(const char *path);
+
 /**
  * Opens a file.
  */

@@ -15,6 +15,12 @@ struct NewFile_s
     void *memoyMapAddress;
 };
 
+PHARO_NEWFILE_EXPORT bool
+NewFile_deleteFile(const char *path)
+{
+    return DeleteFileA(path);
+}
+
 PHARO_NEWFILE_EXPORT NewFile_t *
 NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDisposition_t creationDisposition, NewFileOpenFlags_t flags)
 {
