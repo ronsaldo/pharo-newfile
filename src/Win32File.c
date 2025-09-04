@@ -15,7 +15,8 @@ struct NewFile_s
     void *memoyMapAddress;
 };
 
-static WCHAR *NewFile_utf8ToWideChar(const char *string)
+static WCHAR *
+NewFile_utf8ToWideChar(const char *string)
 {
     size_t stringLen = strlen(string);
     int wstringSize = MultiByteToWideChar(CP_UTF8, 0, string, (int)stringLen, NULL, 0);
@@ -33,10 +34,35 @@ static WCHAR *NewFile_utf8ToWideChar(const char *string)
     return wstring;
 }
 
+static bool
+NewFile_isAbsolutePath(const char *path)
+{
+    return path[0] && (path[1] == ':') && (path[2] == '\\');
+}
+
+static WCHAR *
+NewFile_preparePath(const char *path)
+{
+    // Add the \\?\ prefix to absolute paths
+    if(NewFile_isAbsolutePath(path))
+    {
+        size_t pathLength = strlen(path);
+        char *stringWithPrefix = calloc(4 + pathLength + 1, 1);
+        memcpy(stringWithPrefix, "\\\\?\\", 4);
+        memcpy(stringWithPrefix + 4, path, pathLength);
+        
+        WCHAR *wpath = NewFile_utf8ToWideChar(stringWithPrefix);
+        free(stringWithPrefix);
+        return wpath;
+    }
+
+    return NewFile_utf8ToWideChar(path);
+}
+
 PHARO_NEWFILE_EXPORT bool
 NewFile_deleteFile(const char *path)
 {
-    WCHAR *wpath = NewFile_utf8ToWideChar(path);
+    WCHAR *wpath = NewFile_preparePath(path);
     if(!wpath)
         return false;
 
@@ -87,7 +113,7 @@ NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDispositio
         return NULL;
     }
 
-    WCHAR *wpath = NewFile_utf8ToWideChar(path);
+    WCHAR *wpath = NewFile_preparePath(path);
     if(!wpath)
         return NULL;
 
