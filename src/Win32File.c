@@ -73,6 +73,11 @@ NewFile_close(NewFile_t *file)
     if(!file)
         return;
 
+    if(file->memoryMapCount > 0)
+    {
+        UnmapViewOfFile(file->memoyMapAddress);
+        CloseHandle(file->memoryMapHandle);
+    }
     CloseHandle(file->fileHandle);
     free(file);
 }
