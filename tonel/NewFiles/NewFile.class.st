@@ -15,9 +15,20 @@ NewFile class >> ffiLibrary [
 	
 ]
 
+{ #category : 'finalization' }
+NewFile class >> finalizeResourceData: aHandle [
+	aHandle isNull ifTrue: [ ^ self ].
+	self primitiveClose: aHandle.
+	aHandle beNull
+]
+
 { #category : 'as yet unclassified' }
 NewFile class >> open: path mode: mode creationDisposition: creationDisposition flags: flags [
-	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
+	| file |
+	file := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
+	file isNull ifTrue: [ ^ nil ].
+	
+	^ file autoRelease
 ]
 
 { #category : 'as yet unclassified' }
@@ -25,9 +36,21 @@ NewFile class >> openReadOnly: path [
 	^ self open: path mode: NewFileOpenModeReadOnly creationDisposition: NewFileCreationDispositionOpenExisting flags: NewFileOpenFlagsNone
 ]
 
+{ #category : 'as yet unclassified' }
+NewFile class >> primitiveClose: aFile [
+	^ self ffiCall: #(void NewFile_close(void *aFile))
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
+	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
+]
+
 { #category : 'initialization' }
 NewFile >> close [
-	^ self primitiveClose
+	handle isNull ifTrue: [ ^ self ].
+	self primitiveClose.
+	handle beNull
 ]
 
 { #category : 'accessing' }
@@ -62,7 +85,7 @@ NewFile >> position: aPosition [
 
 { #category : 'initialization' }
 NewFile >> primitiveClose [
-	^ self ffiCall: #(NewFile NewFile_close(self))
+	^ self ffiCall: #(void NewFile_close(self))
 ]
 
 { #category : 'initialization' }
