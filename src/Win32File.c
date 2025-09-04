@@ -240,7 +240,7 @@ PHARO_NEWFILE_EXPORT void * NewFile_memoryMap(NewFile_t *file, NewFileMemMapProt
 PHARO_NEWFILE_EXPORT void
 NewFile_memoryUnmap(NewFile_t *file)
 {
-    if(!file || !file->memoryMapCount)
+    if(!file || file->memoryMapCount == 0)
         return;
 
     --file->memoryMapCount;
@@ -248,6 +248,8 @@ NewFile_memoryUnmap(NewFile_t *file)
         return;
     
     UnmapViewOfFile(file->memoyMapAddress);
+    CloseHandle(file->memoryMapHandle);
+    file->memoryMapHandle = 0;
 }
 
 #endif
