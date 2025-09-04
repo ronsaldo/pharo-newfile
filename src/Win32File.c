@@ -10,6 +10,9 @@
 struct NewFile_s
 {
     HANDLE fileHandle;
+    int memoryMapCount;
+    HANDLE memoryMapHandle;
+    void *memoyMapAddress;
 };
 
 PHARO_NEWFILE_EXPORT NewFile_t *
@@ -155,7 +158,7 @@ NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t 
 }
 
 PHARO_NEWFILE_EXPORT int64_t
-NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset)
+NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, uint64_t offset)
 {
     if(!file)
         return -1;
@@ -171,7 +174,7 @@ NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t
 }
 
 PHARO_NEWFILE_EXPORT int64_t
-NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset)
+NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, uint64_t offset)
 {
     if(!file)
         return -1;
@@ -187,5 +190,47 @@ NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset,
     return writtenBytes;
 }
 
+PHARO_NEWFILE_EXPORT void * NewFile_memoryMap(NewFile_t *file, NewFileMemMapProtection_t protection)
+{
+    if(!file)
+        return NULL;
 
+    if(file->memoryMapCount)
+    {
+        // TODO: Support changing the permission
+        ++file->memoryMapCount;
+        return file->memoyMapAddress;
+    }
+
+    // Map the file protection
+    DWORD flProtect = 0;
+    DWORD desiredAccess = 0;
+    switch(protection)
+    {
+    case NewFileMemMapProtectionReadOnly:
+        flProtect = PAGE_READONLY;
+        desiredAccess = FILE_MAP_READ;
+        break;
+    case NewFileMemMapProtectionReadWrite:
+        flProtect = PAGE_READWRITE;
+        desiredAccess = FILE_MAP_WRITE;
+        break;
+    }
+
+    file->memoryMapHandle = CreateFileMappingA(file->fileHandle, NULL, flProtect, 0, 0, NULL);
+    if(!file->memoryMapHandle)
+        return NULL;
+
+    file->memoyMapAddress = MapViewOfFile(file->memoryMapHandle, desiredAccess, 0, 0, 0);
+    if(!file->memoyMapAddress)
+    {
+        CloseHandle(file->memoryMapHandle);
+        return NULL;
+    }
+
+    file->memoryMapCount = 1;
+
+    abort();
+    return file->memoyMapAddress;
+}
 #endif

@@ -47,6 +47,11 @@ typedef enum NewFileSeekMode_e
     NewFileSeekModeEnd,
 } NewFileSeekMode_t;
 
+typedef enum NewFileMemMapProtection_e
+{
+    NewFileMemMapProtectionReadOnly = 0,
+    NewFileMemMapProtectionReadWrite,
+} NewFileMemMapProtection_t;
 /**
  * Opens a file.
  */
@@ -85,11 +90,21 @@ PHARO_NEWFILE_EXPORT int64_t NewFile_write(NewFile_t *file, const void * buffer,
 /**
  * Read at offset
  */
-PHARO_NEWFILE_EXPORT int64_t NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset);
+PHARO_NEWFILE_EXPORT int64_t NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, uint64_t offset);
 
 /**
  * Write
  */
-PHARO_NEWFILE_EXPORT int64_t NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset);
+PHARO_NEWFILE_EXPORT int64_t NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, uint64_t offset);
+
+/**
+ * Memory Map
+ */
+PHARO_NEWFILE_EXPORT void * NewFile_memoryMap(NewFile_t *file, NewFileMemMapProtection_t protection);
+
+/**
+ * Memory Unmap
+ */
+PHARO_NEWFILE_EXPORT void * NewFile_memoryUnmap(NewFile_t *file, NewFileMemMapProtection_t protection);
 
 #endif // PHARO_NEWFILE_H
