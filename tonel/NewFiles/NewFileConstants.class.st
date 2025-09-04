@@ -1,3 +1,6 @@
+"
+I hold new file constants.
+"
 Class {
 	#name : 'NewFileConstants',
 	#superclass : 'SharedPool',

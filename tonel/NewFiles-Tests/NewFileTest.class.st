@@ -102,3 +102,23 @@ NewFileTest >> testHelloWorldContents [
 	self assert: decodedText equals: text.
 
 ]
+
+{ #category : 'tests' }
+NewFileTest >> testHelloWorldReadOnlyMemoryMapping [
+	| path text file buffer decodedText memoryMap |
+	path := 'test.txt'.
+	text := 'Hello World'.
+	
+	file := NewFile openCreateNewAlways: path.
+	file writeFrom: text utf8Encoded.
+
+	memoryMap := file readOnlyMemoryMap.
+	buffer := memoryMap contents.
+	
+	memoryMap unmap.
+	file close.
+	
+	decodedText := buffer utf8Decoded.
+	self assert: decodedText equals: text.
+
+]

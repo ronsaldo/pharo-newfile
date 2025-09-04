@@ -1,3 +1,6 @@
+"
+I am the new file ffi library.
+"
 Class {
 	#name : 'NewFileLibrary',
 	#superclass : 'FFILibrary',

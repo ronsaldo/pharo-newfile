@@ -23,6 +23,11 @@ NewFileMemoryMappingView >> address: anObject [
 ]
 
 { #category : 'accessing' }
+NewFileMemoryMappingView >> contents [
+	^ address copyFrom: 1 to: size
+]
+
+{ #category : 'accessing' }
 NewFileMemoryMappingView >> file [
 
 	^ file

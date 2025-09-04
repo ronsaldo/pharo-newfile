@@ -1,3 +1,10 @@
+"
+I am a new file. I support different kinds usages:
+1) File stream support.
+2) File read/write with explicit file offset.
+3) Memory mapping.
+
+"
 Class {
 	#name : 'NewFile',
 	#superclass : 'FFIExternalObject',
@@ -139,6 +146,11 @@ NewFile >> readInto: buffer withSize: readSize [
 { #category : 'memory mapping' }
 NewFile >> readOnlyMemoryMap [
 	^ self memoryMapWithProtection: NewFileMemMapProtectionReadOnly
+]
+
+{ #category : 'memory mapping' }
+NewFile >> readWriteMemoryMap [
+	^ self memoryMapWithProtection: NewFileMemMapProtectionReadWrite
 ]
 
 { #category : 'file api' }
