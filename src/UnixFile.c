@@ -3,6 +3,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <stdlib.h>
 
@@ -10,6 +11,12 @@ struct NewFile_s
 {
     int fileDescriptor;
 };
+
+PHARO_NEWFILE_EXPORT bool
+NewFile_deleteFile(const char *path)
+{
+    return unlink(path) == 0;
+}
 
 NewFile_t *
 NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDisposition_t creationDisposition, NewFileOpenFlags_t flags)
@@ -115,6 +122,15 @@ NewFile_tell(NewFile_t *file)
     return lseek(file->fileDescriptor, 0, SEEK_CUR);
 }
 
+bool
+NewFile_truncate(NewFile_t *file, uint64_t newFileSize)
+{
+    if(!file)
+        return -1;
+    
+    return ftruncate(file->fileDescriptor, newFileSize) == 0;
+}
+
 int64_t
 NewFile_read(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize)
 {
@@ -134,7 +150,7 @@ NewFile_write(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t 
 }
 
 int64_t
-NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, int64_t offset)
+NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t readSize, uint64_t offset)
 {
     if(!file)
         return -1;
@@ -143,7 +159,7 @@ NewFile_readAtOffset(NewFile_t *file, void * buffer, size_t bufferOffset, size_t
 }
 
 int64_t
-NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, int64_t offset)
+NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset, size_t writeSize, uint64_t offset)
 {
     if(!file)
         return -1;
