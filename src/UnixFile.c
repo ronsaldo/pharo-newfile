@@ -4,12 +4,16 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/mman.h>
 #include <fcntl.h>
 #include <stdlib.h>
 
 struct NewFile_s
 {
     int fileDescriptor;
+    int memoryMapCount;
+    size_t memoryMapLength;
+    void *memoryMapAddress;
 };
 
 PHARO_NEWFILE_EXPORT bool
@@ -165,6 +169,56 @@ NewFile_writeAtOffset(NewFile_t *file, const void * buffer, size_t bufferOffset,
         return -1;
 
     return pwrite(file->fileDescriptor, (const char*)buffer + bufferOffset, writeSize, offset);
+}
+
+PHARO_NEWFILE_EXPORT void *
+NewFile_memoryMap(NewFile_t *file, NewFileMemMapProtection_t protection)
+{
+    if(!file)
+        return NULL;
+
+    if(file->memoryMapCount > 0)
+    {
+        ++file->memoryMapCount;
+        return file->memoryMapAddress;
+    }
+
+    file->memoryMapLength = NewFile_getSize(file);
+    if(file->memoryMapLength == 0)
+        return 0;
+
+    int mmapProtection = PROT_NONE;
+    switch(protection)
+    {
+    case NewFileMemMapProtectionReadOnly:
+        mmapProtection = PROT_READ;
+        break;
+    case NewFileMemMapProtectionReadWrite:
+        mmapProtection = PROT_READ | PROT_WRITE;
+        break;
+    default:
+        break;
+    }
+
+    file->memoryMapAddress = mmap(NULL, file->memoryMapLength, mmapProtection, MAP_SHARED, file->fileDescriptor, 0);
+    if(file->memoryMapAddress == MAP_FAILED)
+        return NULL;
+
+    ++file->memoryMapCount;
+    return file->memoryMapAddress;
+}
+
+PHARO_NEWFILE_EXPORT void
+NewFile_memoryUnmap(NewFile_t *file)
+{
+    if(!file || file->memoryMapCount <= 0)
+        return;
+
+    --file->memoryMapCount;
+    if(!file->memoryMapCount)
+        return;
+
+    munmap(file->memoryMapAddress, file->memoryMapLength);
 }
 
 #endif
