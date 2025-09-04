@@ -58,6 +58,14 @@ NewFile >> close [
 	handle beNull
 ]
 
+{ #category : 'file api' }
+NewFile >> contents [
+	| buffer |
+	buffer := ByteArray new: self size.
+	self readInto: buffer at: 0.
+	^ buffer
+]
+
 { #category : 'accessing' }
 NewFile >> ffiLibrary [
 	
@@ -109,8 +117,18 @@ NewFile >> readInto: buffer [
 ]
 
 { #category : 'file api' }
+NewFile >> readInto: buffer at: fileOffset [
+	^ self readInto: buffer offset: 0 withSize: buffer size at: fileOffset
+]
+
+{ #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize [
 	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
+]
+
+{ #category : 'file api' }
+NewFile >> readInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
+	^ self ffiCall: #(int64 NewFile_readAtOffset(self, void* buffer, size_t bufferOffset, size_t readSize, uint64 fileOffset))
 ]
 
 { #category : 'file api' }
@@ -150,8 +168,18 @@ NewFile >> writeFrom: dataBuffer [
 ]
 
 { #category : 'file api' }
+NewFile >> writeFrom: dataBuffer at: fileOffset [
+	^ self writeFrom: dataBuffer offset: 0 withSize: dataBuffer size at: fileOffset
+]
+
+{ #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
 	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
+]
+
+{ #category : 'file api' }
+NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
+	^ self ffiCall: #(int64 NewFile_writeAtOffset(self, void* buffer, size_t bufferOffset, size_t bufferSize, int64 fileOffset))
 ]
 
 { #category : 'file api' }
