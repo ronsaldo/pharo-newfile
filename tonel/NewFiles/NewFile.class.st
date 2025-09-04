@@ -37,6 +37,19 @@ NewFile >> ffiLibrary [
 	
 ]
 
+{ #category : 'initialization' }
+NewFile >> memoryMapWithProtection: protection [
+	| mappingAddress |
+	mappingAddress := self primitiveMemoryMapWithProtection: protection.
+	mappingAddress isNull ifTrue: [ ^ nil ].
+
+	^ NewFileMemoryMappingView new
+		address: mappingAddress;
+		file: self;
+		size: self size;
+		yourself
+]
+
 { #category : 'accessing' }
 NewFile >> position [
 	^ self tell
@@ -50,6 +63,16 @@ NewFile >> position: aPosition [
 { #category : 'initialization' }
 NewFile >> primitiveClose [
 	^ self ffiCall: #(NewFile NewFile_close(self))
+]
+
+{ #category : 'initialization' }
+NewFile >> primitiveMemoryMapWithProtection: protection [
+	^ self ffiCall: #(void* NewFile_memoryMap(self, int protection))
+]
+
+{ #category : 'initialization' }
+NewFile >> primitiveMemoryUnmap [
+	^ self ffiCall: #(void NewFile_memoryUnmap(self))
 ]
 
 { #category : 'initialization' }
@@ -68,6 +91,11 @@ NewFile >> readInto: buffer withSize: readSize [
 ]
 
 { #category : 'initialization' }
+NewFile >> readOnlyMemoryMap [
+	^ self memoryMapWithProtection: NewFileMemMapProtectionReadOnly
+]
+
+{ #category : 'initialization' }
 NewFile >> seek: offset mode: seekMode [
 	^ self ffiCall: #(int64 NewFile_seek(self, int64 offset, int seekMode))
 ]
@@ -80,6 +108,12 @@ NewFile >> size [
 { #category : 'initialization' }
 NewFile >> tell [
 	^ self ffiCall: #(int64 NewFile_tell(self))
+]
+
+{ #category : 'as yet unclassified' }
+NewFile >> unmapView: aFileMemoryMappingView [
+	self primitiveMemoryUnmap.
+	aFileMemoryMappingView unmapped
 ]
 
 { #category : 'initialization' }

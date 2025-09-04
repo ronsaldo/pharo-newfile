@@ -7,6 +7,8 @@ Class {
 		'NewFileCreationDispositionOpenAlways',
 		'NewFileCreationDispositionOpenExisting',
 		'NewFileCreationDispositionTruncateExisting',
+		'NewFileMemMapProtectionReadOnly',
+		'NewFileMemMapProtectionReadWrite',
 		'NewFileOpenFlagsAppend',
 		'NewFileOpenFlagsNone',
 		'NewFileOpenModeReadOnly',
@@ -39,5 +41,7 @@ NewFileConstants class >> initialize [
 	NewFileCreationDispositionOpenAlways := 4.
 	NewFileCreationDispositionTruncateExisting := 5.
 	
+	NewFileMemMapProtectionReadOnly := 0.
+   NewFileMemMapProtectionReadWrite := 1.
 
 ]

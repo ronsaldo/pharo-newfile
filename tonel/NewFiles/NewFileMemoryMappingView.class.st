@@ -1,0 +1,59 @@
+Class {
+	#name : 'NewFileMemoryMappingView',
+	#superclass : 'Object',
+	#instVars : [
+		'file',
+		'size',
+		'address'
+	],
+	#category : 'NewFiles',
+	#package : 'NewFiles'
+}
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> address [
+
+	^ address
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> address: anObject [
+
+	address := anObject
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> file [
+
+	^ file
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> file: anObject [
+
+	file := anObject
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> size [
+
+	^ size
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> size: anObject [
+
+	size := anObject
+]
+
+{ #category : 'as yet unclassified' }
+NewFileMemoryMappingView >> unmap [
+	^ file unmapView: self
+]
+
+{ #category : 'as yet unclassified' }
+NewFileMemoryMappingView >> unmapped [
+	address := nil.
+	file := nil.
+	size := 0.
+]
