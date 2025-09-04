@@ -15,6 +15,11 @@ Class {
 	#package : 'NewFiles'
 }
 
+{ #category : 'as yet unclassified' }
+NewFile class >> deleteFile: path [
+	^ self ffiCall: #(bool NewFile_deleteFile(String path))
+]
+
 { #category : 'accessing' }
 NewFile class >> ffiLibrary [
 	
@@ -166,6 +171,16 @@ NewFile >> size [
 { #category : 'file api' }
 NewFile >> tell [
 	^ self ffiCall: #(int64 NewFile_tell(self))
+]
+
+{ #category : 'file api' }
+NewFile >> truncate [
+	^ self truncateToSize: 0
+]
+
+{ #category : 'file api' }
+NewFile >> truncateToSize: newSize [
+	^ self ffiCall: #(int64 NewFile_truncate(self, uint64 newSize))
 ]
 
 { #category : 'memory mapping' }

@@ -25,7 +25,8 @@ NewFileTest >> testHelloWorld [
 	
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
-
+	
+	NewFile deleteFile: path.
 ]
 
 { #category : 'tests' }
@@ -45,6 +46,7 @@ NewFileTest >> testHelloWorld2 [
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
 
+	NewFile deleteFile: path.
 ]
 
 { #category : 'tests' }
@@ -65,6 +67,7 @@ NewFileTest >> testHelloWorldAtFileOffset [
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
 
+	NewFile deleteFile: path.
 ]
 
 { #category : 'tests' }
@@ -84,6 +87,7 @@ NewFileTest >> testHelloWorldAtFileOffset2 [
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
 
+	NewFile deleteFile: path.
 ]
 
 { #category : 'tests' }
@@ -100,7 +104,8 @@ NewFileTest >> testHelloWorldContents [
 	
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
-
+	
+	NewFile deleteFile: path.
 ]
 
 { #category : 'tests' }
@@ -121,4 +126,18 @@ NewFileTest >> testHelloWorldReadOnlyMemoryMapping [
 	decodedText := buffer utf8Decoded.
 	self assert: decodedText equals: text.
 
+	NewFile deleteFile: path.
+]
+
+{ #category : 'tests' }
+NewFileTest >> testTruncate [
+	| path file |
+	path := 'test.bin'.
+	
+	file := NewFile openCreateNewAlways: path.
+	file truncateToSize: 4096.
+	self assert: file size equals: 4096.
+	file close.
+	
+	NewFile deleteFile: path.
 ]
