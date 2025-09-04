@@ -105,6 +105,6 @@ PHARO_NEWFILE_EXPORT void * NewFile_memoryMap(NewFile_t *file, NewFileMemMapProt
 /**
  * Memory Unmap
  */
-PHARO_NEWFILE_EXPORT void * NewFile_memoryUnmap(NewFile_t *file, NewFileMemMapProtection_t protection);
+PHARO_NEWFILE_EXPORT void NewFile_memoryUnmap(NewFile_t *file);
 
 #endif // PHARO_NEWFILE_H

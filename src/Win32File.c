@@ -62,7 +62,7 @@ NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDispositio
     if(handle == INVALID_HANDLE_VALUE)
         return NULL;
 
-    NewFile_t *newFile = calloc(1, sizeof(NewFile_t*));
+    NewFile_t *newFile = calloc(1, sizeof(NewFile_t));
     newFile->fileHandle = handle;
     return newFile;
 }
@@ -234,8 +234,20 @@ PHARO_NEWFILE_EXPORT void * NewFile_memoryMap(NewFile_t *file, NewFileMemMapProt
     }
 
     file->memoryMapCount = 1;
-
-    abort();
     return file->memoyMapAddress;
 }
+
+PHARO_NEWFILE_EXPORT void
+NewFile_memoryUnmap(NewFile_t *file)
+{
+    if(!file || !file->memoryMapCount)
+        return;
+
+    --file->memoryMapCount;
+    if(file->memoryMapCount > 0)
+        return;
+    
+    UnmapViewOfFile(file->memoyMapAddress);
+}
+
 #endif
