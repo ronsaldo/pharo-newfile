@@ -15,10 +15,34 @@ struct NewFile_s
     void *memoyMapAddress;
 };
 
+static WCHAR *NewFile_utf8ToWideChar(const char *string)
+{
+    size_t stringLen = strlen(string);
+    int wstringSize = MultiByteToWideChar(CP_UTF8, 0, string, (int)stringLen, NULL, 0);
+    if(wstringSize <= 0)
+        return NULL;
+
+    WCHAR *wstring = calloc(wstringSize + 1, sizeof(WCHAR));
+    wstringSize = MultiByteToWideChar(CP_UTF8, 0, string, (int)stringLen, wstring, wstringSize + 1);
+    if(wstringSize <= 0)
+    {
+        free(wstring);
+        return NULL;
+    }
+
+    return wstring;
+}
+
 PHARO_NEWFILE_EXPORT bool
 NewFile_deleteFile(const char *path)
 {
-    return DeleteFileA(path);
+    WCHAR *wpath = NewFile_utf8ToWideChar(path);
+    if(!wpath)
+        return false;
+
+    bool result = DeleteFileW(wpath);
+    free(wpath);
+    return result;
 }
 
 PHARO_NEWFILE_EXPORT NewFile_t *
@@ -63,8 +87,12 @@ NewFile_open(const char *path, NewFileOpenMode_t mode, NewFileCreationDispositio
         return NULL;
     }
 
-    // TODO: Perform UTF8 wide string conversion.
-    HANDLE handle = CreateFileA(path, desiredAccess, shareMode, NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
+    WCHAR *wpath = NewFile_utf8ToWideChar(path);
+    if(!wpath)
+        return NULL;
+
+    HANDLE handle = CreateFileW(wpath, desiredAccess, shareMode, NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
+    free(wpath);
     if(handle == INVALID_HANDLE_VALUE)
         return NULL;
 
