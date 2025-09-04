@@ -32,6 +32,11 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 ]
 
 { #category : 'as yet unclassified' }
+NewFile class >> openCreateNewAlways: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateAlways flags: NewFileOpenFlagsNone
+]
+
+{ #category : 'as yet unclassified' }
 NewFile class >> openReadOnly: path [
 	^ self open: path mode: NewFileOpenModeReadOnly creationDisposition: NewFileCreationDispositionOpenExisting flags: NewFileOpenFlagsNone
 ]
@@ -60,7 +65,7 @@ NewFile >> ffiLibrary [
 	
 ]
 
-{ #category : 'initialization' }
+{ #category : 'memory mapping' }
 NewFile >> memoryMapWithProtection: protection [
 	| mappingAddress |
 	mappingAddress := self primitiveMemoryMapWithProtection: protection.
@@ -83,73 +88,73 @@ NewFile >> position: aPosition [
 	^ self seek: aPosition mode: NewFileSeekModeSet
 ]
 
-{ #category : 'initialization' }
+{ #category : 'private' }
 NewFile >> primitiveClose [
 	^ self ffiCall: #(void NewFile_close(self))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'private' }
 NewFile >> primitiveMemoryMapWithProtection: protection [
 	^ self ffiCall: #(void* NewFile_memoryMap(self, int protection))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'private' }
 NewFile >> primitiveMemoryUnmap [
 	^ self ffiCall: #(void NewFile_memoryUnmap(self))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> readInto: buffer [
 	^ self readInto: buffer offset: 0 withSize: buffer size
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize [
 	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> readInto: buffer withSize: readSize [
 	^ self readInto: buffer offset: 0 withSize: readSize
 ]
 
-{ #category : 'initialization' }
+{ #category : 'memory mapping' }
 NewFile >> readOnlyMemoryMap [
 	^ self memoryMapWithProtection: NewFileMemMapProtectionReadOnly
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> seek: offset mode: seekMode [
 	^ self ffiCall: #(int64 NewFile_seek(self, int64 offset, int seekMode))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> size [
 	^ self ffiCall: #(int64 NewFile_getSize(self))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> tell [
 	^ self ffiCall: #(int64 NewFile_tell(self))
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'memory mapping' }
 NewFile >> unmapView: aFileMemoryMappingView [
 	self primitiveMemoryUnmap.
 	aFileMemoryMappingView unmapped
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> writeFrom: dataBuffer [
 	^ self writeFrom: dataBuffer offset: 0 withSize: dataBuffer size
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
 	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'file api' }
 NewFile >> writeFrom: buffer withSize: bufferSize [
 	^ self writeFrom: buffer offset: 0 withSize: bufferSize
 ]
