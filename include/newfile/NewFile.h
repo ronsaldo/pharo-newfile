@@ -15,8 +15,7 @@
 #   define PHARO_NEWFILE_EXPORT
 #endif
 
-typedef void * NewFileHandle;
-
+typedef struct NewDirectory_s NewDirectory_t;
 typedef struct NewFile_s NewFile_t;
 
 typedef enum NewFileOpenMode_e
@@ -53,6 +52,26 @@ typedef enum NewFileMemMapProtection_e
     NewFileMemMapProtectionReadOnly = 0,
     NewFileMemMapProtectionReadWrite,
 } NewFileMemMapProtection_t;
+
+/**
+ * Opens a directory.
+ */
+PHARO_NEWFILE_EXPORT NewDirectory_t *NewDirectory_open(const char *path);
+
+/**
+ * Rewinds a directory.
+ */
+PHARO_NEWFILE_EXPORT void NewDirectory_rewind(NewDirectory_t *directory);
+
+/**
+ * Gets the next entry.
+ */
+PHARO_NEWFILE_EXPORT const char *NewDirectory_next(NewDirectory_t *directory);
+
+/**
+ * Closes a directory
+ */
+PHARO_NEWFILE_EXPORT void NewDirectory_close(NewDirectory_t *directory);
 
 /**
  * Deletes a file

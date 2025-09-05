@@ -5,8 +5,59 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
+
+struct NewDirectory_s
+{
+    DIR *handle;
+};
+
+NewDirectory_t *
+NewDirectory_open(const char *path)
+{
+    DIR *handle = opendir(path);
+    if(!handle)
+        return NULL;
+    
+    NewDirectory_t *directory = calloc(1, sizeof(NewDirectory_t));
+    directory->handle = handle;
+    return directory;
+}
+
+void
+NewDirectory_rewind(NewDirectory_t *directory)
+{
+    if(!directory)
+        return;
+
+    rewinddir(directory->handle);
+}
+
+const char *
+NewDirectory_next(NewDirectory_t *directory)
+{
+    if(!directory)
+        return NULL;
+
+    struct dirent *entry = readdir(directory->handle);
+    if(!entry)
+        return NULL;
+
+    return entry->d_name;
+}
+
+void
+NewDirectory_close(NewDirectory_t *directory)
+{
+    if(!directory)
+        return;
+    
+    closedir(directory->handle);
+    free(directory);
+}
 
 struct NewFile_s
 {
