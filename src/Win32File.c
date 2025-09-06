@@ -78,13 +78,29 @@ NewFile_preparePath(const char *path)
     return NewFile_utf8ToWideChar(path);
 }
 
+static WCHAR *
+NewFile_prepareWildCardPath(const char *path)
+{
+    const char * suffix = "\\*";
+    size_t pathLength = strlen(path);
+    size_t suffixLength = strlen(suffix);
+
+    char *pathWithWildCard = calloc(pathLength + suffixLength + 1, 1);
+    memcpy(pathWithWildCard, path, pathLength);
+    memcpy(pathWithWildCard + pathLength, suffix, suffixLength);
+
+    WCHAR *wpath = NewFile_preparePath(pathWithWildCard);
+    free(pathWithWildCard);
+    return wpath;
+}
+
 PHARO_NEWFILE_EXPORT NewDirectory_t*
 NewDirectory_open(const char *path)
 {
     if(!path)
         return NULL;
 
-    WCHAR *wpath = NewFile_preparePath(path);
+    WCHAR *wpath = NewFile_prepareWildCardPath(path);
 
     WIN32_FIND_DATAW findData;
     HANDLE findHandle = FindFirstFileW(wpath, &findData);
@@ -142,7 +158,8 @@ NewDirectory_next(NewDirectory_t *directory)
     if(!FindNextFileW(directory->findHandle, &directory->findData))
         return NULL;
 
-    return NULL;
+    directory->elementName = NewFile_wideCharToUtf8(directory->findData.cFileName);
+    return directory->elementName;
 }
 
 PHARO_NEWFILE_EXPORT void
