@@ -13,6 +13,7 @@ struct NewDirectory_s
     HANDLE findHandle;
     WIN32_FIND_DATAW findData;
     bool isFirst;
+    char *elementName;
 };
 
 struct NewFile_s
@@ -40,6 +41,16 @@ NewFile_utf8ToWideChar(const char *string)
     }
 
     return wstring;
+}
+
+static char *
+NewFile_wideCharToUtf8(const WCHAR *wstring)
+{
+    int characterCount = WideCharToMultiByte(CP_UTF8, 0, wstring, -1, NULL, 0, NULL, NULL);
+    char *string = calloc(characterCount + 1, 1);
+    WideCharToMultiByte(CP_UTF8, 0, wstring, -1, string, characterCount, NULL, NULL);
+
+    return string;
 }
 
 static bool
@@ -88,6 +99,7 @@ NewDirectory_open(const char *path)
     directory->findHandle = findHandle;
     directory->findData = findData;
     directory->isFirst = true;
+    directory->elementName = NewFile_wideCharToUtf8(directory->findData.cFileName);
     return directory;
 }
 
@@ -105,6 +117,10 @@ NewDirectory_rewind(NewDirectory_t *directory)
     FindClose(directory->findHandle);
     directory->findHandle = newFindHandle;
     directory->findData = newFindData;
+    if(directory->elementName)
+        free(directory->elementName);
+
+    directory->elementName = NewFile_wideCharToUtf8(directory->findData.cFileName);
     return true;
 }
 
@@ -117,8 +133,14 @@ NewDirectory_next(NewDirectory_t *directory)
     if(directory->isFirst)
     {
         directory->isFirst = false;
-        return "first";
+        return directory->elementName;
     }
+
+    free(directory->elementName);
+    directory->elementName = NULL;
+
+    if(!FindNextFileW(directory->findHandle, &directory->findData))
+        return NULL;
 
     return NULL;
 }
@@ -130,6 +152,7 @@ NewDirectory_close(NewDirectory_t *directory)
         return;
 
     FindClose(directory->findHandle);
+    free(directory->elementName);
     free(directory->path);
     free(directory);
 }
