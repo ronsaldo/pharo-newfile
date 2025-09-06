@@ -11,6 +11,11 @@ Class {
 	#package : 'NewFiles'
 }
 
+{ #category : 'creation and destruction' }
+NewDirectory class >> create: path [
+	^ self ffiCall: #(bool NewDirectory_create(String path))
+]
+
 { #category : 'accessing' }
 NewDirectory class >> ffiLibrary [
 	
@@ -42,6 +47,11 @@ NewDirectory class >> primitiveClose: aDirectory [
 { #category : 'as yet unclassified' }
 NewDirectory class >> primitiveOpen: path [
 	^ self ffiCall: #(NewDirectory NewDirectory_open(String path))
+]
+
+{ #category : 'creation and destruction' }
+NewDirectory class >> removeEmpty: path [
+	^ self ffiCall: #(bool NewDirectory_removeEmpty(String path))
 ]
 
 { #category : 'initialization' }
