@@ -15,6 +15,17 @@ struct NewDirectory_s
     DIR *handle;
 };
 
+bool
+NewDirectory_create(const char *path)
+{
+    return mkdir(path, 0755) == 0;
+}
+
+bool NewDirectory_removeEmpty(const char *path)
+{
+    return rmdir(path) == 0;
+}
+
 NewDirectory_t *
 NewDirectory_open(const char *path)
 {
@@ -31,7 +42,7 @@ bool
 NewDirectory_rewind(NewDirectory_t *directory)
 {
     if(!directory)
-        return;
+        return false;
 
     rewinddir(directory->handle);
     return true;
