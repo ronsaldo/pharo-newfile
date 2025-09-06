@@ -54,6 +54,16 @@ typedef enum NewFileMemMapProtection_e
 } NewFileMemMapProtection_t;
 
 /**
+ * Creates a directory.
+ */
+PHARO_NEWFILE_EXPORT bool NewDirectory_create(const char *path);
+
+/**
+ * Removes an empty directory
+ */
+PHARO_NEWFILE_EXPORT bool NewDirectory_removeEmpty(const char *path);
+
+/**
  * Opens a directory.
  */
 PHARO_NEWFILE_EXPORT NewDirectory_t *NewDirectory_open(const char *path);

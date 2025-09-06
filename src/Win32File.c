@@ -94,6 +94,29 @@ NewFile_prepareWildCardPath(const char *path)
     return wpath;
 }
 
+/**
+ * Creates a directory.
+ */
+PHARO_NEWFILE_EXPORT bool
+NewDirectory_create(const char *path)
+{
+    WCHAR *wpath = NewFile_preparePath(path);
+    BOOL result = CreateDirectoryW(wpath, NULL);
+    free(wpath);
+    return result;
+}
+
+/**
+ * Removes an empty directory
+ */
+PHARO_NEWFILE_EXPORT bool NewDirectory_removeEmpty(const char *path)
+{
+    WCHAR *wpath = NewFile_preparePath(path);
+    BOOL result = RemoveDirectoryW(wpath);
+    free(wpath);
+    return result;
+}
+
 PHARO_NEWFILE_EXPORT NewDirectory_t*
 NewDirectory_open(const char *path)
 {
