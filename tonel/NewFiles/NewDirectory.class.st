@@ -11,6 +11,21 @@ Class {
 	#package : 'NewFiles'
 }
 
+{ #category : 'archive operations' }
+NewDirectory class >> contentsOf: path [
+	| directory |
+	directory := self open: path.
+	directory ifNil: [
+		self error: 'Failed to open directory ' , path
+	].
+
+	^ [ 
+		directory contents.
+	] ensure: [ 
+		directory close
+	]
+]
+
 { #category : 'creation and destruction' }
 NewDirectory class >> create: path [
 	^ self ffiCall: #(bool NewDirectory_create(String path))
@@ -30,7 +45,7 @@ NewDirectory class >> finalizeResourceData: aHandle [
 	aHandle beNull
 ]
 
-{ #category : 'protocol' }
+{ #category : 'creation and destruction' }
 NewDirectory class >> open: path [
 	| directory |
 	directory := self primitiveOpen: path.
@@ -39,12 +54,12 @@ NewDirectory class >> open: path [
 	^ directory autoRelease
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 NewDirectory class >> primitiveClose: aDirectory [
 	^ self ffiCall: #(void NewDirectory_close(void *aDirectory))
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 NewDirectory class >> primitiveOpen: path [
 	^ self ffiCall: #(NewDirectory NewDirectory_open(String path))
 ]
