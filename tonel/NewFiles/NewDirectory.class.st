@@ -89,5 +89,5 @@ NewDirectory >> primitiveNext [
 
 { #category : 'private' }
 NewDirectory >> rewind [
-	^ self ffiCall: #(String NewDirectory_rewind(self))
+	^ self ffiCall: #(bool NewDirectory_rewind(self))
 ]
