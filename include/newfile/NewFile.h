@@ -61,7 +61,7 @@ PHARO_NEWFILE_EXPORT NewDirectory_t *NewDirectory_open(const char *path);
 /**
  * Rewinds a directory.
  */
-PHARO_NEWFILE_EXPORT void NewDirectory_rewind(NewDirectory_t *directory);
+PHARO_NEWFILE_EXPORT bool NewDirectory_rewind(NewDirectory_t *directory);
 
 /**
  * Gets the next entry.

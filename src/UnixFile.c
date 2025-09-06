@@ -27,13 +27,14 @@ NewDirectory_open(const char *path)
     return directory;
 }
 
-void
+bool
 NewDirectory_rewind(NewDirectory_t *directory)
 {
     if(!directory)
         return;
 
     rewinddir(directory->handle);
+    return true;
 }
 
 const char *

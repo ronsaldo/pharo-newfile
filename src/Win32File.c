@@ -7,6 +7,14 @@
 
 #include <stdlib.h>
 
+struct NewDirectory_s
+{
+    WCHAR *path;
+    HANDLE findHandle;
+    WIN32_FIND_DATAW findData;
+    bool isFirst;
+};
+
 struct NewFile_s
 {
     HANDLE fileHandle;
@@ -57,6 +65,73 @@ NewFile_preparePath(const char *path)
     }
 
     return NewFile_utf8ToWideChar(path);
+}
+
+PHARO_NEWFILE_EXPORT NewDirectory_t*
+NewDirectory_open(const char *path)
+{
+    if(!path)
+        return NULL;
+
+    WCHAR *wpath = NewFile_preparePath(path);
+
+    WIN32_FIND_DATAW findData;
+    HANDLE findHandle = FindFirstFileW(wpath, &findData);
+    if(findHandle == INVALID_HANDLE_VALUE)
+    {
+        free(wpath);
+        return NULL;
+    }
+
+    NewDirectory_t *directory = calloc(1, sizeof(NewDirectory_t));
+    directory->path = wpath;
+    directory->findHandle = findHandle;
+    directory->findData = findData;
+    directory->isFirst = true;
+    return directory;
+}
+
+PHARO_NEWFILE_EXPORT bool
+NewDirectory_rewind(NewDirectory_t *directory)
+{
+    if(!directory || directory->isFirst)
+        return true;
+
+    WIN32_FIND_DATAW newFindData;
+    HANDLE newFindHandle = FindFirstFileW(directory->path, &newFindData);
+    if(newFindHandle == INVALID_HANDLE_VALUE)
+        return false;
+
+    FindClose(directory->findHandle);
+    directory->findHandle = newFindHandle;
+    directory->findData = newFindData;
+    return true;
+}
+
+PHARO_NEWFILE_EXPORT const char *
+NewDirectory_next(NewDirectory_t *directory)
+{
+    if(!directory)
+        return NULL;
+
+    if(directory->isFirst)
+    {
+        directory->isFirst = false;
+        return "first";
+    }
+
+    return NULL;
+}
+
+PHARO_NEWFILE_EXPORT void
+NewDirectory_close(NewDirectory_t *directory)
+{
+    if(!directory)
+        return;
+
+    FindClose(directory->findHandle);
+    free(directory->path);
+    free(directory);
 }
 
 PHARO_NEWFILE_EXPORT bool
