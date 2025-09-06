@@ -109,7 +109,8 @@ NewDirectory_create(const char *path)
 /**
  * Removes an empty directory
  */
-PHARO_NEWFILE_EXPORT bool NewDirectory_removeEmpty(const char *path)
+PHARO_NEWFILE_EXPORT bool
+NewDirectory_removeEmpty(const char *path)
 {
     WCHAR *wpath = NewFile_preparePath(path);
     BOOL result = RemoveDirectoryW(wpath);
