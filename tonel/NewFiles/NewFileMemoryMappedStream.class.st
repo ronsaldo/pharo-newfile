@@ -1,3 +1,6 @@
+"
+I am streaming interface for memory mapped files.
+"
 Class {
 	#name : 'NewFileMemoryMappedStream',
 	#superclass : 'Stream',
@@ -46,6 +49,19 @@ NewFileMemoryMappedStream >> next [
 	result := address uint8AtOffset: position.
 	position := position + 1.
 	^ result
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappedStream >> next: n [
+	| remainingSize resultSize buffer |
+	remainingSize := size - position.
+	resultSize := n min: remainingSize.
+	buffer := ByteArray new: n.
+	1 to: resultSize do: [:i |
+		buffer at: i put: (address uint8AtOffset: position).
+		position := position + 1
+	].
+	^ buffer
 ]
 
 { #category : 'accessing' }
