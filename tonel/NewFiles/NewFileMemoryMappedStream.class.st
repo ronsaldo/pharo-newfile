@@ -67,6 +67,10 @@ NewFileMemoryMappedStream >> next: n [
 { #category : 'accessing' }
 NewFileMemoryMappedStream >> nextPut: value [
 	| result |
+	hasWritePermission ifFalse: [
+		^ self error: 'Cannot write into a read-only file memory mapping'
+	].
+
 	position >= size ifTrue: [ ^ nil ].
 	result := address uint8AtOffset: position put: value.
 	position := position + 1.
