@@ -65,6 +65,26 @@ NewFileMemoryMappedStream >> next: n [
 ]
 
 { #category : 'accessing' }
+NewFileMemoryMappedStream >> next: amount putAll: aByteArray [
+
+	^ self next: amount putAll: aByteArray startingAt: 1
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappedStream >> next: amount putAll: aByteArray startingAt: startingIndex [
+	| remainingSize putAmount |
+	hasWritePermission ifFalse: [
+		^ self error: 'Cannot write into a read-only file memory mapping'
+	].
+	remainingSize := size - position.
+	putAmount := amount min: remainingSize.
+	putAmount > 0 ifTrue: [
+		address replaceFrom: position + 1 to: position + putAmount with: aByteArray startingAt: startingIndex
+	].
+	^ aByteArray 
+]
+
+{ #category : 'accessing' }
 NewFileMemoryMappedStream >> nextPut: value [
 	| result |
 	hasWritePermission ifFalse: [
@@ -75,6 +95,15 @@ NewFileMemoryMappedStream >> nextPut: value [
 	result := address uint8AtOffset: position put: value.
 	position := position + 1.
 	^ result
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappedStream >> nextPutAll: aByteArray [
+	aByteArray class = ByteArray ifFalse: [
+		^ super nextPutAll: aByteArray
+	].
+
+	^ self next: aByteArray basicSize putAll: aByteArray
 ]
 
 { #category : 'accessing' }
