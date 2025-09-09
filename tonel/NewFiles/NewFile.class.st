@@ -95,6 +95,7 @@ NewFile >> memoryMapWithProtection: protection [
 		address: mappingAddress;
 		file: self;
 		size: self size;
+		protection: protection;
 		yourself
 ]
 

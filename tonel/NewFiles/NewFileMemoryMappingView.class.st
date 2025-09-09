@@ -1,10 +1,17 @@
+"
+I hold metadata about a specific file memory mapped segment.
+"
 Class {
 	#name : 'NewFileMemoryMappingView',
 	#superclass : 'Object',
 	#instVars : [
 		'file',
 		'size',
-		'address'
+		'address',
+		'protection'
+	],
+	#pools : [
+		'NewFileConstants'
 	],
 	#category : 'NewFiles',
 	#package : 'NewFiles'
@@ -37,6 +44,23 @@ NewFileMemoryMappingView >> file [
 NewFileMemoryMappingView >> file: anObject [
 
 	file := anObject
+]
+
+{ #category : 'testing' }
+NewFileMemoryMappingView >> hasWritePermission [
+	^ protection = NewFileMemMapProtectionReadWrite
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> protection [
+
+	^ protection
+]
+
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> protection: anObject [
+
+	protection := anObject
 ]
 
 { #category : 'accessing' }
