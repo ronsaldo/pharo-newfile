@@ -17,6 +17,24 @@ Class {
 	#package : 'NewFiles'
 }
 
+{ #category : 'mocks' }
+NewFileMemoryMappingView class >> readOnlyWithByteArray: byteArray [
+	^ self new
+		address: byteArray;
+		size: byteArray size;
+		protection: NewFileMemMapProtectionReadOnly;
+		yourself
+]
+
+{ #category : 'mocks' }
+NewFileMemoryMappingView class >> readWriteWithByteArray: byteArray [
+	^ self new
+		address: byteArray;
+		size: byteArray size;
+		protection: NewFileMemMapProtectionReadWrite;
+		yourself
+]
+
 { #category : 'accessing' }
 NewFileMemoryMappingView >> address [
 
@@ -75,8 +93,14 @@ NewFileMemoryMappingView >> size: anObject [
 	size := anObject
 ]
 
+{ #category : 'accessing' }
+NewFileMemoryMappingView >> stream [
+	^ NewFileMemoryMappedStream onFileMemoryMappingView: self
+]
+
 { #category : 'as yet unclassified' }
 NewFileMemoryMappingView >> unmap [
+	file ifNil: [ ^ self ].
 	^ file unmapView: self
 ]
 
