@@ -63,6 +63,11 @@ NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDis
 	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
 ]
 
+{ #category : 'accessing' }
+NewFile >> atEnd [
+	^ self position >= self size
+]
+
 { #category : 'initialization' }
 NewFile >> close [
 	handle isNull ifTrue: [ ^ self ].

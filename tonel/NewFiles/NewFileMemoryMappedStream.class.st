@@ -11,8 +11,9 @@ Class {
 		'size',
 		'hasWritePermission'
 	],
-	#category : 'NewFiles',
-	#package : 'NewFiles'
+	#category : 'NewFiles-Streams',
+	#package : 'NewFiles',
+	#tag : 'Streams'
 }
 
 { #category : 'as yet unclassified' }
