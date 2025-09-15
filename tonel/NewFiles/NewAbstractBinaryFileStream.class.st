@@ -92,6 +92,31 @@ NewAbstractBinaryFileStream >> lf [
 	self nextPut: Character lf asInteger.
 ]
 
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> next [
+	"Answer the next byte from this file, or nil if at the end of the file."
+
+	^ (self next: 1) ifEmpty: [ nil ] ifNotEmpty: [ :col | col first ]
+]
+
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> next: n [
+	"Return a string with the next n characters of the filestream in it."
+
+	^ self next: n into: (ByteArray new: n)
+]
+
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> next: n into: aBuffer [
+	"Return a string with the next n characters of the filestream in it."
+	| readBuffer read |
+	readBuffer := aBuffer.
+	read := file readInto: aBuffer offset: 0 withSize: n.
+	^read = n
+		ifTrue: [ readBuffer ]
+		ifFalse: [ readBuffer copyFrom: 1 to: read ]
+]
+
 { #category : 'character writing' }
 NewAbstractBinaryFileStream >> next: amount putAll: aByteArray [
 
