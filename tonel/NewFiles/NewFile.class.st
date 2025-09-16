@@ -8,6 +8,9 @@ I am a new file. I support different kinds usages:
 Class {
 	#name : 'NewFile',
 	#superclass : 'FFIExternalObject',
+	#instVars : [
+		'mode'
+	],
 	#pools : [
 		'NewFileConstants'
 	],
@@ -49,6 +52,7 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 	file := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
 	file isNull ifTrue: [ ^ nil ].
 	
+	file mode: mode.
 	^ file autoRelease
 ]
 
@@ -87,6 +91,11 @@ NewFile >> atEnd [
 	^ self position >= self size
 ]
 
+{ #category : 'as yet unclassified' }
+NewFile >> binaryStream [
+	^ NewBinaryFileStream forFile: self forWrite: self isForWrite
+]
+
 { #category : 'initialization' }
 NewFile >> close [
 	handle isNull ifTrue: [ ^ self ].
@@ -109,6 +118,11 @@ NewFile >> ffiLibrary [
 	
 ]
 
+{ #category : 'testing' }
+NewFile >> isForWrite [
+	^ mode = NewFileOpenModeReadWrite
+]
+
 { #category : 'memory mapping' }
 NewFile >> memoryMapWithProtection: protection [
 	| mappingAddress |
@@ -121,6 +135,18 @@ NewFile >> memoryMapWithProtection: protection [
 		size: self size;
 		protection: protection;
 		yourself
+]
+
+{ #category : 'accessing' }
+NewFile >> mode [
+
+	^ mode
+]
+
+{ #category : 'accessing' }
+NewFile >> mode: anObject [
+
+	mode := anObject
 ]
 
 { #category : 'accessing' }
