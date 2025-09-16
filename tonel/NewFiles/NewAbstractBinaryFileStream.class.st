@@ -153,8 +153,27 @@ NewAbstractBinaryFileStream >> position: newPosition [
 	^ file position: newPosition
 ]
 
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> size [
+
+	^ file size
+]
+
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> skip: n [
+	"Set the character position to n characters from the current position.
+	Error if not enough characters left in the file.
+	By default we read n characters and we avoid reading the output"
+	self next: n
+]
+
 { #category : 'flushing' }
 NewAbstractBinaryFileStream >> sync [
 	self flag: 'Todo implement sync'.
 	
+]
+
+{ #category : 'accessing' }
+NewAbstractBinaryFileStream >> writeFrom: writeBuffer startingAt: aNumber count: length [
+	^ file writeFrom: writeBuffer offset: aNumber - 1 withSize: length
 ]
