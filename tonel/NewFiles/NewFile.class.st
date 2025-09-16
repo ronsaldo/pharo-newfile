@@ -20,6 +20,15 @@ NewFile class >> deleteFile: path [
 	^ self ffiCall: #(bool NewFile_deleteFile(String path))
 ]
 
+{ #category : 'public' }
+NewFile class >> exists: aPath [
+	| file |
+	file := self openReadOnly: aPath.
+	file ifNil: [ ^ false ].
+	file close.
+	^ true
+]
+
 { #category : 'accessing' }
 NewFile class >> ffiLibrary [
 	
@@ -41,6 +50,16 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 	file isNull ifTrue: [ ^ nil ].
 	
 	^ file autoRelease
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> openAlways: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionOpenAlways flags: NewFileOpenFlagsNone
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> openCreateNew: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateNew flags: NewFileOpenFlagsNone
 ]
 
 { #category : 'as yet unclassified' }
