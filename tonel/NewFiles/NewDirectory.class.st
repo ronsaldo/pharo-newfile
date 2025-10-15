@@ -28,7 +28,7 @@ NewDirectory class >> contentsOf: path [
 
 { #category : 'creation and destruction' }
 NewDirectory class >> create: path [
-	^ self ffiCall: #(bool NewDirectory_create(String path))
+	^ self ffiPrimitiveCreate: path
 ]
 
 { #category : 'accessing' }
@@ -36,6 +36,26 @@ NewDirectory class >> ffiLibrary [
 	
 	^ NewFileLibrary 
 	
+]
+
+{ #category : 'private' }
+NewDirectory class >> ffiPrimitiveClose: aDirectory [
+	^ self ffiCall: #(void NewDirectory_close(void *aDirectory))
+]
+
+{ #category : 'creation and destruction' }
+NewDirectory class >> ffiPrimitiveCreate: path [
+	^ self ffiCall: #(bool NewDirectory_create(String path))
+]
+
+{ #category : 'private' }
+NewDirectory class >> ffiPrimitiveOpen: path [
+	^ self ffiCall: #(NewDirectory NewDirectory_open(String path))
+]
+
+{ #category : 'creation and destruction' }
+NewDirectory class >> ffiRemoveEmpty: path [
+	^ self ffiCall: #(bool NewDirectory_removeEmpty(String path))
 ]
 
 { #category : 'finalization' }
@@ -56,17 +76,17 @@ NewDirectory class >> open: path [
 
 { #category : 'private' }
 NewDirectory class >> primitiveClose: aDirectory [
-	^ self ffiCall: #(void NewDirectory_close(void *aDirectory))
+	^ self ffiPrimitiveClose: aDirectory
 ]
 
 { #category : 'private' }
 NewDirectory class >> primitiveOpen: path [
-	^ self ffiCall: #(NewDirectory NewDirectory_open(String path))
+	^ self ffiPrimitiveOpen: path
 ]
 
 { #category : 'creation and destruction' }
 NewDirectory class >> removeEmpty: path [
-	^ self ffiCall: #(bool NewDirectory_removeEmpty(String path))
+	^ self ffiRemoveEmpty: path
 ]
 
 { #category : 'initialization' }
@@ -95,6 +115,21 @@ NewDirectory >> ffiLibrary [
 ]
 
 { #category : 'private' }
+NewDirectory >> ffiPrimitiveClose [
+	^ self ffiCall: #(void NewDirectory_close(self))
+]
+
+{ #category : 'private' }
+NewDirectory >> ffiPrimitiveNext [
+	^ self ffiCall: #(String NewDirectory_next(self))
+]
+
+{ #category : 'private' }
+NewDirectory >> ffiPrimitiveRewind [
+	^ self ffiCall: #(bool NewDirectory_rewind(self))
+]
+
+{ #category : 'private' }
 NewDirectory >> next [
 	| nextName |
 	nextName := self primitiveNext.
@@ -104,15 +139,15 @@ NewDirectory >> next [
 
 { #category : 'private' }
 NewDirectory >> primitiveClose [
-	^ self ffiCall: #(void NewDirectory_close(self))
+	^ self ffiPrimitiveClose
 ]
 
 { #category : 'private' }
 NewDirectory >> primitiveNext [
-	^ self ffiCall: #(String NewDirectory_next(self))
+	^ self ffiPrimitiveNext
 ]
 
 { #category : 'private' }
 NewDirectory >> rewind [
-	^ self ffiCall: #(bool NewDirectory_rewind(self))
+	^ self ffiPrimitiveRewind
 ]
