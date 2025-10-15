@@ -20,7 +20,7 @@ Class {
 
 { #category : 'as yet unclassified' }
 NewFile class >> deleteFile: path [
-	^ self ffiCall: #(bool NewFile_deleteFile(String path))
+	^ self ffiDeleteFile: path
 ]
 
 { #category : 'public' }
@@ -32,11 +32,26 @@ NewFile class >> exists: aPath [
 	^ true
 ]
 
+{ #category : 'as yet unclassified' }
+NewFile class >> ffiDeleteFile: path [
+	^ self ffiCall: #(bool NewFile_deleteFile(String path))
+]
+
 { #category : 'accessing' }
 NewFile class >> ffiLibrary [
 	
 	^ NewFileLibrary 
 	
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> ffiPrimitiveClose: aFile [
+	^ self ffiCall: #(void NewFile_close(void *aFile))
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> ffiPrimitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
+	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
 ]
 
 { #category : 'finalization' }
@@ -78,12 +93,12 @@ NewFile class >> openReadOnly: path [
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveClose: aFile [
-	^ self ffiCall: #(void NewFile_close(void *aFile))
+	^ self ffiPrimitiveClose: aFile
 ]
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
-	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
+	^ self ffiPrimitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags
 ]
 
 { #category : 'accessing' }
@@ -116,6 +131,56 @@ NewFile >> ffiLibrary [
 	
 	^ NewFileLibrary 
 	
+]
+
+{ #category : 'private' }
+NewFile >> ffiPrimitiveClose [
+	^ self ffiCall: #(void NewFile_close(self))
+]
+
+{ #category : 'private' }
+NewFile >> ffiPrimitiveMemoryMapWithProtection: protection [
+	^ self ffiCall: #(void* NewFile_memoryMap(self, int protection))
+]
+
+{ #category : 'private' }
+NewFile >> ffiPrimitiveMemoryUnmap [
+	^ self ffiCall: #(void NewFile_memoryUnmap(self))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize [
+	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
+	^ self ffiCall: #(int64 NewFile_readAtOffset(self, void* buffer, size_t bufferOffset, size_t readSize, uint64 fileOffset))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveSeek: offset mode: seekMode [
+	^ self ffiCall: #(int64 NewFile_seek(self, int64 offset, int seekMode))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveTell [
+	^ self ffiCall: #(int64 NewFile_tell(self))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveTruncateToSize: newSize [
+	^ self ffiCall: #(int64 NewFile_truncate(self, uint64 newSize))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize [
+	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
+]
+
+{ #category : 'file api' }
+NewFile >> ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
+	^ self ffiCall: #(int64 NewFile_writeAtOffset(self, void* buffer, size_t bufferOffset, size_t bufferSize, int64 fileOffset))
 ]
 
 { #category : 'testing' }
@@ -161,17 +226,17 @@ NewFile >> position: aPosition [
 
 { #category : 'private' }
 NewFile >> primitiveClose [
-	^ self ffiCall: #(void NewFile_close(self))
+	^ self ffiPrimitiveClose
 ]
 
 { #category : 'private' }
 NewFile >> primitiveMemoryMapWithProtection: protection [
-	^ self ffiCall: #(void* NewFile_memoryMap(self, int protection))
+	^ self ffiPrimitiveMemoryMapWithProtection: protection
 ]
 
 { #category : 'private' }
 NewFile >> primitiveMemoryUnmap [
-	^ self ffiCall: #(void NewFile_memoryUnmap(self))
+	^ self ffiPrimitiveMemoryUnmap
 ]
 
 { #category : 'file api' }
@@ -186,12 +251,12 @@ NewFile >> readInto: buffer at: fileOffset [
 
 { #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize [
-	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
+	^ self ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize
 ]
 
 { #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
-	^ self ffiCall: #(int64 NewFile_readAtOffset(self, void* buffer, size_t bufferOffset, size_t readSize, uint64 fileOffset))
+	^ self ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize at: fileOffset
 ]
 
 { #category : 'file api' }
@@ -211,7 +276,7 @@ NewFile >> readWriteMemoryMap [
 
 { #category : 'file api' }
 NewFile >> seek: offset mode: seekMode [
-	^ self ffiCall: #(int64 NewFile_seek(self, int64 offset, int seekMode))
+	^ self ffiPrimitiveSeek: offset mode: seekMode
 ]
 
 { #category : 'file api' }
@@ -221,7 +286,7 @@ NewFile >> size [
 
 { #category : 'file api' }
 NewFile >> tell [
-	^ self ffiCall: #(int64 NewFile_tell(self))
+	^ self ffiPrimitiveTell
 ]
 
 { #category : 'file api' }
@@ -231,7 +296,7 @@ NewFile >> truncate [
 
 { #category : 'file api' }
 NewFile >> truncateToSize: newSize [
-	^ self ffiCall: #(int64 NewFile_truncate(self, uint64 newSize))
+	^ self ffiPrimitiveTruncateToSize: newSize
 ]
 
 { #category : 'memory mapping' }
@@ -252,12 +317,12 @@ NewFile >> writeFrom: dataBuffer at: fileOffset [
 
 { #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
-	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
+	^ self ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize
 ]
 
 { #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
-	^ self ffiCall: #(int64 NewFile_writeAtOffset(self, void* buffer, size_t bufferOffset, size_t bufferSize, int64 fileOffset))
+	^ self ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset
 ]
 
 { #category : 'file api' }
