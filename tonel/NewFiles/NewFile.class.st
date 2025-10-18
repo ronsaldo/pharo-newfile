@@ -44,16 +44,6 @@ NewFile class >> ffiLibrary [
 	
 ]
 
-{ #category : 'as yet unclassified' }
-NewFile class >> ffiPrimitiveClose: aFile [
-	^ self ffiCall: #(void NewFile_close(void *aFile))
-]
-
-{ #category : 'as yet unclassified' }
-NewFile class >> ffiPrimitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
-	^ self ffiCall: #(NewFile NewFile_open(String path, int mode, int creationDisposition, int flags))
-]
-
 { #category : 'finalization' }
 NewFile class >> finalizeResourceData: aHandle [
 	aHandle isNull ifTrue: [ ^ self ].
@@ -68,8 +58,7 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 	file isNull ifTrue: [ ^ nil ].
 
 	file class == ExternalAddress ifTrue: [
-		self halt.
-		file := self class fromHandle: file.
+		file := self fromHandle: file.
 	].
 	
 	file mode: mode.
@@ -98,13 +87,14 @@ NewFile class >> openReadOnly: path [
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveClose: aFile [
-	^ self ffiPrimitiveClose: aFile
+	<primitive: 'primitiveFileClose' module: 'NewFilePlugin'>
+	
 ]
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
 	<primitive: 'primitiveFileOpen' module: 'NewFilePlugin'>
-	^ self ffiPrimitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags
+	^ nil
 ]
 
 { #category : 'accessing' }
@@ -120,7 +110,7 @@ NewFile >> binaryStream [
 { #category : 'initialization' }
 NewFile >> close [
 	handle isNull ifTrue: [ ^ self ].
-	self primitiveClose.
+	self primitiveClose: handle.
 	handle beNull
 ]
 
@@ -137,11 +127,6 @@ NewFile >> ffiLibrary [
 	
 	^ NewFileLibrary 
 	
-]
-
-{ #category : 'private' }
-NewFile >> ffiPrimitiveClose [
-	^ self ffiCall: #(void NewFile_close(self))
 ]
 
 { #category : 'private' }
@@ -231,8 +216,9 @@ NewFile >> position: aPosition [
 ]
 
 { #category : 'private' }
-NewFile >> primitiveClose [
-	^ self ffiPrimitiveClose
+NewFile >> primitiveClose: aFileHandle [
+	<primitive: 'primitiveFileClose' module: 'NewFilePlugin'>
+	
 ]
 
 { #category : 'private' }
