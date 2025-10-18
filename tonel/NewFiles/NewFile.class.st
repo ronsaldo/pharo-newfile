@@ -20,7 +20,7 @@ Class {
 
 { #category : 'as yet unclassified' }
 NewFile class >> deleteFile: path [
-	^ self ffiDeleteFile: path
+	^ self primitiveDeleteFile: path
 ]
 
 { #category : 'public' }
@@ -30,11 +30,6 @@ NewFile class >> exists: aPath [
 	file ifNil: [ ^ false ].
 	file close.
 	^ true
-]
-
-{ #category : 'as yet unclassified' }
-NewFile class >> ffiDeleteFile: path [
-	^ self ffiCall: #(bool NewFile_deleteFile(String path))
 ]
 
 { #category : 'accessing' }
@@ -88,13 +83,21 @@ NewFile class >> openReadOnly: path [
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveClose: aFile [
 	<primitive: 'primitiveFileClose' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
+]
+
+{ #category : 'as yet unclassified' }
+NewFile class >> primitiveDeleteFile: path [
+	<primitive: 'primitiveDeleteFile' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
 	
 ]
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
 	<primitive: 'primitiveFileOpen' module: 'NewFilePlugin'>
-	^ nil
+	^ self primitiveFailed 
 ]
 
 { #category : 'accessing' }
@@ -129,51 +132,6 @@ NewFile >> ffiLibrary [
 	
 ]
 
-{ #category : 'private' }
-NewFile >> ffiPrimitiveMemoryMapWithProtection: protection [
-	^ self ffiCall: #(void* NewFile_memoryMap(self, int protection))
-]
-
-{ #category : 'private' }
-NewFile >> ffiPrimitiveMemoryUnmap [
-	^ self ffiCall: #(void NewFile_memoryUnmap(self))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize [
-	^ self ffiCall: #(int64 NewFile_read(self, void* buffer, size_t bufferOffset, size_t readSize))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
-	^ self ffiCall: #(int64 NewFile_readAtOffset(self, void* buffer, size_t bufferOffset, size_t readSize, uint64 fileOffset))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveSeek: offset mode: seekMode [
-	^ self ffiCall: #(int64 NewFile_seek(self, int64 offset, int seekMode))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveTell [
-	^ self ffiCall: #(int64 NewFile_tell(self))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveTruncateToSize: newSize [
-	^ self ffiCall: #(int64 NewFile_truncate(self, uint64 newSize))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize [
-	^ self ffiCall: #(int64 NewFile_write(self, void* buffer, size_t bufferOffset, size_t bufferSize))
-]
-
-{ #category : 'file api' }
-NewFile >> ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
-	^ self ffiCall: #(int64 NewFile_writeAtOffset(self, void* buffer, size_t bufferOffset, size_t bufferSize, int64 fileOffset))
-]
-
 { #category : 'testing' }
 NewFile >> isForWrite [
 	^ mode = NewFileOpenModeReadWrite
@@ -182,7 +140,7 @@ NewFile >> isForWrite [
 { #category : 'memory mapping' }
 NewFile >> memoryMapWithProtection: protection [
 	| mappingAddress |
-	mappingAddress := self primitiveMemoryMapWithProtection: protection.
+	mappingAddress := self primitiveMemoryMap: handle withProtection: protection.
 	mappingAddress isNull ifTrue: [ ^ nil ].
 
 	^ NewFileMemoryMappingView new
@@ -215,20 +173,71 @@ NewFile >> position: aPosition [
 	^ self seek: aPosition mode: NewFileSeekModeSet
 ]
 
-{ #category : 'private' }
+{ #category : 'primitives' }
+NewFile >> primitive: aHandle readInto: buffer offset: bufferOffset withSize: readSize [
+	<primitive: 'primitiveFileReadInto' module: 'NewFilePlugin'>
+	^ self primitiveFailed
+]
+
+{ #category : 'primitives' }
+NewFile >> primitive: aHandle readInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
+	<primitive: 'primitiveFileReadIntoAtFileOffset' module: 'NewFilePlugin'>
+	^ self primitiveFailed
+]
+
+{ #category : 'primitives' }
+NewFile >> primitive: aHandle seek: offset mode: seekMode [
+	<primitive: 'primitiveFileSeek' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+]
+
+{ #category : 'primitives' }
+NewFile >> primitive: aHandle writeFrom: buffer offset: bufferOffset withSize: bufferSize [
+	<primitive: 'primitiveFileWriteFrom' module: 'NewFilePlugin'>
+	^ self primitiveFailed
+]
+
+{ #category : 'primitives' }
+NewFile >> primitive: aHandle writeFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
+	<primitive: 'primitiveFileWriteFromAtFileOffset' module: 'NewFilePlugin'>
+	^ self primitiveFailed
+]
+
+{ #category : 'primitives' }
 NewFile >> primitiveClose: aFileHandle [
 	<primitive: 'primitiveFileClose' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
 	
 ]
 
-{ #category : 'private' }
-NewFile >> primitiveMemoryMapWithProtection: protection [
-	^ self ffiPrimitiveMemoryMapWithProtection: protection
+{ #category : 'primitives' }
+NewFile >> primitiveGetSize: handle [
+	<primitive: 'primitiveFileGetSize' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
 ]
 
-{ #category : 'private' }
-NewFile >> primitiveMemoryUnmap [
-	^ self ffiPrimitiveMemoryUnmap
+{ #category : 'primitives' }
+NewFile >> primitiveMemoryMap: handle withProtection: protection [
+	<primitive: 'primitiveMemoryMapWithProtected' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+]
+
+{ #category : 'primitives' }
+NewFile >> primitiveMemoryUnmap: handle [
+	<primitive: 'primitiveMemoryUnmap' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+]
+
+{ #category : 'primitives' }
+NewFile >> primitiveTell: handle [
+	<primitive: 'primitiveFileTell' module: 'NewFilePlugin'>
+	^ self primitiveFailed
+]
+
+{ #category : 'primitives' }
+NewFile >> primitiveTruncate: aHandle toSize: newSize [
+	<primitive: 'primitiveFileTruncate' module: 'NewFilePlugin'>
+	^ self primitiveFailed
 ]
 
 { #category : 'file api' }
@@ -243,12 +252,12 @@ NewFile >> readInto: buffer at: fileOffset [
 
 { #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize [
-	^ self ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize
+	^ self primitive: handle readInto: buffer offset: bufferOffset withSize: readSize
 ]
 
 { #category : 'file api' }
 NewFile >> readInto: buffer offset: bufferOffset withSize: readSize at: fileOffset [
-	^ self ffiPrimitiveReadInto: buffer offset: bufferOffset withSize: readSize at: fileOffset
+	^ self primitive: handle readInto: buffer offset: bufferOffset withSize: readSize at: fileOffset
 ]
 
 { #category : 'file api' }
@@ -268,17 +277,17 @@ NewFile >> readWriteMemoryMap [
 
 { #category : 'file api' }
 NewFile >> seek: offset mode: seekMode [
-	^ self ffiPrimitiveSeek: offset mode: seekMode
+	^ self primitive: handle seek: offset mode: seekMode
 ]
 
 { #category : 'file api' }
 NewFile >> size [
-	^ self ffiCall: #(int64 NewFile_getSize(self))
+	^ self primitiveGetSize: handle
 ]
 
 { #category : 'file api' }
 NewFile >> tell [
-	^ self ffiPrimitiveTell
+	^ self primitiveTell: handle
 ]
 
 { #category : 'file api' }
@@ -288,12 +297,12 @@ NewFile >> truncate [
 
 { #category : 'file api' }
 NewFile >> truncateToSize: newSize [
-	^ self ffiPrimitiveTruncateToSize: newSize
+	^ self primitiveTruncate: handle toSize: newSize
 ]
 
 { #category : 'memory mapping' }
 NewFile >> unmapView: aFileMemoryMappingView [
-	self primitiveMemoryUnmap.
+	self primitiveMemoryUnmap: handle.
 	aFileMemoryMappingView unmapped
 ]
 
@@ -309,12 +318,12 @@ NewFile >> writeFrom: dataBuffer at: fileOffset [
 
 { #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
-	^ self ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize
+	^ self primitive: handle writeFrom: buffer offset: bufferOffset withSize: bufferSize
 ]
 
 { #category : 'file api' }
 NewFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset [
-	^ self ffiPrimitiveWriteFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset
+	^ self primitive: handle writeFrom: buffer offset: bufferOffset withSize: bufferSize at: fileOffset
 ]
 
 { #category : 'file api' }
