@@ -218,7 +218,7 @@ NewFile >> primitiveGetSize: handle [
 
 { #category : 'primitives' }
 NewFile >> primitiveMemoryMap: handle withProtection: protection [
-	<primitive: 'primitiveMemoryMapWithProtected' module: 'NewFilePlugin'>
+	<primitive: 'primitiveMemoryMapWithProtection' module: 'NewFilePlugin'>
 	^ self primitiveFailed 
 ]
 
