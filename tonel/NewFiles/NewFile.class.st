@@ -66,6 +66,11 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 	| file |
 	file := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
 	file isNull ifTrue: [ ^ nil ].
+
+	file class == ExternalAddress ifTrue: [
+		self halt.
+		file := self class fromHandle: file.
+	].
 	
 	file mode: mode.
 	^ file autoRelease
@@ -98,6 +103,7 @@ NewFile class >> primitiveClose: aFile [
 
 { #category : 'as yet unclassified' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
+	<primitive: 'primitiveFileOpen' module: 'NewFilePlugin'>
 	^ self ffiPrimitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags
 ]
 
