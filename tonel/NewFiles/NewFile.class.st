@@ -48,13 +48,11 @@ NewFile class >> finalizeResourceData: aHandle [
 
 { #category : 'as yet unclassified' }
 NewFile class >> open: path mode: mode creationDisposition: creationDisposition flags: flags [
-	| file |
-	file := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
-	file isNull ifTrue: [ ^ nil ].
+	| handle file |
+	handle := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
+	handle isNull ifTrue: [ ^ nil ].
 
-	file class == ExternalAddress ifTrue: [
-		file := self fromHandle: file.
-	].
+	file := self fromHandle: handle.
 	
 	file mode: mode.
 	^ file autoRelease

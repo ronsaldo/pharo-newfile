@@ -28,7 +28,8 @@ NewDirectory class >> contentsOf: path [
 
 { #category : 'creation and destruction' }
 NewDirectory class >> create: path [
-	^ self ffiPrimitiveCreate: path
+	<primitive: 'primitiveDirectoryCreate' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
 ]
 
 { #category : 'accessing' }
@@ -36,26 +37,6 @@ NewDirectory class >> ffiLibrary [
 	
 	^ NewFileLibrary 
 	
-]
-
-{ #category : 'private' }
-NewDirectory class >> ffiPrimitiveClose: aDirectory [
-	^ self ffiCall: #(void NewDirectory_close(void *aDirectory))
-]
-
-{ #category : 'creation and destruction' }
-NewDirectory class >> ffiPrimitiveCreate: path [
-	^ self ffiCall: #(bool NewDirectory_create(String path))
-]
-
-{ #category : 'private' }
-NewDirectory class >> ffiPrimitiveOpen: path [
-	^ self ffiCall: #(NewDirectory NewDirectory_open(String path))
-]
-
-{ #category : 'creation and destruction' }
-NewDirectory class >> ffiRemoveEmpty: path [
-	^ self ffiCall: #(bool NewDirectory_removeEmpty(String path))
 ]
 
 { #category : 'finalization' }
@@ -67,32 +48,38 @@ NewDirectory class >> finalizeResourceData: aHandle [
 
 { #category : 'creation and destruction' }
 NewDirectory class >> open: path [
-	| directory |
-	directory := self primitiveOpen: path.
-	directory isNull ifTrue: [ ^ nil ].
+	| handle directory |
+	handle := self primitiveOpen: path.
+	handle isNull ifTrue: [ ^ nil ].
 	
+	directory := self fromHandle: handle.
 	^ directory autoRelease
 ]
 
 { #category : 'private' }
 NewDirectory class >> primitiveClose: aDirectory [
-	^ self ffiPrimitiveClose: aDirectory
+	<primitive: 'primitiveDirectoryClose' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
 ]
 
 { #category : 'private' }
 NewDirectory class >> primitiveOpen: path [
-	^ self ffiPrimitiveOpen: path
+	<primitive: 'primitiveDirectoryOpen' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
 ]
 
 { #category : 'creation and destruction' }
 NewDirectory class >> removeEmpty: path [
-	^ self ffiRemoveEmpty: path
+	<primitive: 'primitiveDirectoryRemoveEmpty' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
 ]
 
 { #category : 'initialization' }
 NewDirectory >> close [
 	handle isNull ifTrue: [ ^ self ].
-	self primitiveClose.
+	self primitiveClose: handle.
 	handle beNull
 ]
 
@@ -115,39 +102,39 @@ NewDirectory >> ffiLibrary [
 ]
 
 { #category : 'private' }
-NewDirectory >> ffiPrimitiveClose [
-	^ self ffiCall: #(void NewDirectory_close(self))
-]
-
-{ #category : 'private' }
-NewDirectory >> ffiPrimitiveNext [
-	^ self ffiCall: #(String NewDirectory_next(self))
-]
-
-{ #category : 'private' }
-NewDirectory >> ffiPrimitiveRewind [
-	^ self ffiCall: #(bool NewDirectory_rewind(self))
-]
-
-{ #category : 'private' }
 NewDirectory >> next [
-	| nextName |
-	nextName := self primitiveNext.
-	nextName isEmpty ifTrue: [^ nil ].	
+	| nextNameAddress nextName |
+	nextNameAddress := self primitiveNext: handle.
+	nextNameAddress isNull ifTrue: [^ nil ].
+	
+	nextName := nextNameAddress utf8StringFromCString.
+	nextName ifEmpty: [ ^ nil ].
+	
 	^ nextName 
 ]
 
 { #category : 'private' }
-NewDirectory >> primitiveClose [
-	^ self ffiPrimitiveClose
+NewDirectory >> primitiveClose: aDirectory [
+	<primitive: 'primitiveDirectoryClose' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
 ]
 
 { #category : 'private' }
-NewDirectory >> primitiveNext [
-	^ self ffiPrimitiveNext
+NewDirectory >> primitiveNext: aHandle [
+	<primitive: 'primitiveDirectoryNext' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
+]
+
+{ #category : 'private' }
+NewDirectory >> primitiveRewind: aHandle [
+	<primitive: 'primitiveDirectoryRewind' module: 'NewFilePlugin'>
+	^ self primitiveFailed 
+	
 ]
 
 { #category : 'private' }
 NewDirectory >> rewind [
-	^ self ffiPrimitiveRewind
+	^ self primitiveRewind: handle
 ]
