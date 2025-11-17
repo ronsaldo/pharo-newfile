@@ -93,6 +93,13 @@ NewFile class >> primitiveDeleteFile: path [
 ]
 
 { #category : 'as yet unclassified' }
+NewFile class >> primitiveIsAvailable [
+	<primitive: 'primitiveIsAvailable' module: 'NewFilePlugin'>
+	^ false
+	
+]
+
+{ #category : 'as yet unclassified' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
 	<primitive: 'primitiveFileOpen' module: 'NewFilePlugin'>
 	^ self primitiveFailed 
