@@ -32,13 +32,6 @@ NewFile class >> exists: aPath [
 	^ true
 ]
 
-{ #category : 'accessing' }
-NewFile class >> ffiLibrary [
-	
-	^ NewFileLibrary 
-	
-]
-
 { #category : 'finalization' }
 NewFile class >> finalizeResourceData: aHandle [
 	aHandle isNull ifTrue: [ ^ self ].
@@ -128,13 +121,6 @@ NewFile >> contents [
 	buffer := ByteArray new: self size.
 	self readInto: buffer at: 0.
 	^ buffer
-]
-
-{ #category : 'accessing' }
-NewFile >> ffiLibrary [
-	
-	^ NewFileLibrary 
-	
 ]
 
 { #category : 'testing' }

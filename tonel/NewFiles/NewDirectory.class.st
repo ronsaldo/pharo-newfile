@@ -32,13 +32,6 @@ NewDirectory class >> create: path [
 	^ self primitiveFailed 
 ]
 
-{ #category : 'accessing' }
-NewDirectory class >> ffiLibrary [
-	
-	^ NewFileLibrary 
-	
-]
-
 { #category : 'finalization' }
 NewDirectory class >> finalizeResourceData: aHandle [
 	aHandle isNull ifTrue: [ ^ self ].
@@ -92,13 +85,6 @@ NewDirectory >> contents [
 			out nextPut: next
 		]	
 	]
-]
-
-{ #category : 'accessing' }
-NewDirectory >> ffiLibrary [
-	
-	^ NewFileLibrary 
-	
 ]
 
 { #category : 'private' }
