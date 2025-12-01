@@ -11,6 +11,8 @@ Class {
 { #category : 'tests' }
 NewFileTest >> testHelloWorld [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -32,6 +34,8 @@ NewFileTest >> testHelloWorld [
 { #category : 'tests' }
 NewFileTest >> testHelloWorld2 [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -52,6 +56,8 @@ NewFileTest >> testHelloWorld2 [
 { #category : 'tests' }
 NewFileTest >> testHelloWorldAbsolutePath [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt' asFileReference asAbsolute fullName.
 	text := 'Hello World'.
 	
@@ -73,6 +79,8 @@ NewFileTest >> testHelloWorldAbsolutePath [
 { #category : 'tests' }
 NewFileTest >> testHelloWorldAtFileOffset [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -94,6 +102,8 @@ NewFileTest >> testHelloWorldAtFileOffset [
 { #category : 'tests' }
 NewFileTest >> testHelloWorldAtFileOffset2 [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -114,6 +124,8 @@ NewFileTest >> testHelloWorldAtFileOffset2 [
 { #category : 'tests' }
 NewFileTest >> testHelloWorldContents [
 	| path text file buffer decodedText |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -132,6 +144,8 @@ NewFileTest >> testHelloWorldContents [
 { #category : 'tests' }
 NewFileTest >> testHelloWorldReadOnlyMemoryMapping [
 	| path text file buffer decodedText memoryMap |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
@@ -153,6 +167,8 @@ NewFileTest >> testHelloWorldReadOnlyMemoryMapping [
 { #category : 'tests' }
 NewFileTest >> testTruncate [
 	| path file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	path := 'test.bin'.
 	
 	file := NewFile openCreateNewAlways: path.

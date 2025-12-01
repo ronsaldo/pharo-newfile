@@ -15,6 +15,8 @@ NewBinaryFileStreamTest >> fileStreamForFileNamed: fileName [
 
 { #category : 'private' }
 NewBinaryFileStreamTest >> killTestFile [
+	NewFile primitiveIsAvailable ifFalse: [ ^ self ].
+	
 	(NewFile exists: 'testFile') ifTrue: [
 		NewFile deleteFile: 'testFile'
 	].
@@ -35,8 +37,9 @@ NewBinaryFileStreamTest >> tearDown [
 
 { #category : 'tests' }
 NewBinaryFileStreamTest >> testEmptyFileIsAtEnd [
-
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	self assert: file atEnd.
 	file close.
@@ -46,6 +49,8 @@ NewBinaryFileStreamTest >> testEmptyFileIsAtEnd [
 NewBinaryFileStreamTest >> testFileWithSomeBytesSizeIsNotZero [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	self assert: file position equals: 1.
@@ -60,6 +65,8 @@ NewBinaryFileStreamTest >> testFileWithSomeBytesSizeIsNotZero [
 NewBinaryFileStreamTest >> testFullFileIsAtEnd [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	self assert: file atEnd.
@@ -70,6 +77,8 @@ NewBinaryFileStreamTest >> testFullFileIsAtEnd [
 NewBinaryFileStreamTest >> testOpenFile [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file close.
 
@@ -80,6 +89,8 @@ NewBinaryFileStreamTest >> testOpenFile [
 NewBinaryFileStreamTest >> testPeekDoesNotAdvanceTheStream [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file nextPut: 2.
@@ -97,6 +108,8 @@ NewBinaryFileStreamTest >> testPeekDoesNotAdvanceTheStream [
 NewBinaryFileStreamTest >> testReadFullFileIsAtEnd [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file close.
@@ -111,6 +124,8 @@ NewBinaryFileStreamTest >> testReadFullFileIsAtEnd [
 NewBinaryFileStreamTest >> testReadLessThanAvailableYieldsJustRead [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file nextPut: 2.
@@ -126,6 +141,8 @@ NewBinaryFileStreamTest >> testReadLessThanAvailableYieldsJustRead [
 NewBinaryFileStreamTest >> testReadMoreThanAvailableYieldsOnlyAvailable [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	self assert: (file next:2) equals: #[].
 
@@ -142,6 +159,8 @@ NewBinaryFileStreamTest >> testReadMoreThanAvailableYieldsOnlyAvailable [
 NewBinaryFileStreamTest >> testReadMultipleBytes [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file nextPut: 2.
@@ -156,6 +175,8 @@ NewBinaryFileStreamTest >> testReadMultipleBytes [
 NewBinaryFileStreamTest >> testReadWhenNothingAvailableYieldsNil [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	self assert: file next equals: nil.
 	file close.
@@ -165,6 +186,8 @@ NewBinaryFileStreamTest >> testReadWhenNothingAvailableYieldsNil [
 NewBinaryFileStreamTest >> testSkipLecture [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file nextPut: 2.
@@ -181,6 +204,8 @@ NewBinaryFileStreamTest >> testSkipLecture [
 NewBinaryFileStreamTest >> testWriteFromStartingAtCount [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file writeFrom: #[1 2 3] startingAt: 2 count: 2.
 	file close.
@@ -195,6 +220,8 @@ NewBinaryFileStreamTest >> testWriteFromStartingAtCount [
 NewBinaryFileStreamTest >> testWriteMultipleBytes [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPutAll: #[1 2].
 	file close.
@@ -209,6 +236,8 @@ NewBinaryFileStreamTest >> testWriteMultipleBytes [
 NewBinaryFileStreamTest >> testWriteReadInt [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file close.
@@ -222,6 +251,8 @@ NewBinaryFileStreamTest >> testWriteReadInt [
 NewBinaryFileStreamTest >> testWriteReadInt2 [
 
 	| file |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file position: 0.
@@ -235,6 +266,8 @@ NewBinaryFileStreamTest >> testWriteReadInt2 [
 NewBinaryFileStreamTest >> testWriteToClosedFileFails [
 
 	| fileStream |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	fileStream := self fileStreamForFileNamed: 'testFile'.
 	fileStream close.
 	self should: [ fileStream wrappedStream nextPut: 1 ] raise: Error

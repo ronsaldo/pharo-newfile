@@ -11,6 +11,8 @@ Class {
 { #category : 'tests' }
 NewFileMemoryMappedStreamTest >> testReadOnly [
 	| testData mappingView stream testRead |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	testData := 'Hello World' utf8Encoded.
 	mappingView := NewFileMemoryMappingView readOnlyWithByteArray: testData.
 	self assert: mappingView size equals: testData size.
@@ -27,6 +29,8 @@ NewFileMemoryMappedStreamTest >> testReadOnly [
 { #category : 'tests' }
 NewFileMemoryMappedStreamTest >> testReadWrite [
 	| testData mappingView stream testRead |
+	NewFile primitiveIsAvailable ifFalse: [ ^ self skip ].
+	
 	testData := 'Hello World' utf8Encoded.
 	mappingView := NewFileMemoryMappingView readWriteWithByteArray: testData.
 	self assert: mappingView size equals: testData size.
