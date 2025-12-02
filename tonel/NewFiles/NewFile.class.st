@@ -113,7 +113,7 @@ NewFile >> atEnd [
 	^ self position >= self size
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 NewFile >> binaryStream [
 	^ NewBinaryFileStream forFile: self forWrite: self isForWrite
 ]

@@ -8,37 +8,37 @@ Class {
 	#package : 'NewFiles'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 FileAPI class >> currentFileClass [
 	^ self useNewFile ifTrue: [ NewFile ] ifFalse: [ OldFile ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file api' }
 FileAPI class >> deleteFile: path [
 	^ self currentFileClass deleteFile: path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file api' }
 FileAPI class >> exists: path [
 	^ self currentFileClass exists: path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file api' }
 FileAPI class >> openAlways: path [
 	^ self currentFileClass openAlways: path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file api' }
 FileAPI class >> openCreateAlways: path [
 	^ self currentFileClass openCreateAlways: path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file api' }
 FileAPI class >> openReadOnly: path [
 	^ self currentFileClass openReadOnly: path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 FileAPI class >> useNewFile [
 	^ NewFile primitiveIsAvailable
 ]

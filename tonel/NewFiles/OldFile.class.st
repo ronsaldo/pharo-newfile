@@ -74,7 +74,7 @@ OldFile >> atEnd [
 	^ self position >= self size
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 OldFile >> binaryStream [
 	^ NewBinaryFileStream forFile: self forWrite: self isForWrite
 ]
