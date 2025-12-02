@@ -3,10 +3,7 @@ I provide legacy file plugin support.
 "
 Class {
 	#name : 'OldFile',
-	#superclass : 'Object',
-	#instVars : [
-		'handle'
-	],
+	#superclass : 'FFIExternalObject',
 	#category : 'NewFiles',
 	#package : 'NewFiles'
 }
@@ -17,8 +14,16 @@ OldFile class >> deleteFile: path [
 ]
 
 { #category : 'primitives - files' }
+OldFile class >> finalizeResourceData: aHandle [
+	(File closed: aHandle ) ifTrue: [ ^ self ].
+	File close: aHandle
+]
+
+{ #category : 'primitives - files' }
 OldFile class >> makeWithHandle: handle [
-	^ self new handle: handle; yourself
+	| file |
+	file := self fromHandle: handle.
+	^ file autoRelease
 ]
 
 { #category : 'primitives - files' }
@@ -32,16 +37,4 @@ OldFile class >> openCreateNewAlways: path [
 { #category : 'initialization' }
 OldFile >> close [
 	File close: handle
-]
-
-{ #category : 'accessing' }
-OldFile >> handle [
-
-	^ handle
-]
-
-{ #category : 'accessing' }
-OldFile >> handle: anObject [
-
-	handle := anObject
 ]
