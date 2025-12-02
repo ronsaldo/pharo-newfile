@@ -29,6 +29,11 @@ OldFile class >> openCreateNewAlways: path [
 	^ self makeWithHandle: handle
 ]
 
+{ #category : 'initialization' }
+OldFile >> close [
+	File close: handle
+]
+
 { #category : 'accessing' }
 OldFile >> handle [
 
