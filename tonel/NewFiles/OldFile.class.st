@@ -4,6 +4,9 @@ I provide legacy file plugin support.
 Class {
 	#name : 'OldFile',
 	#superclass : 'FFIExternalObject',
+	#instVars : [
+		'isForWrite'
+	],
 	#category : 'NewFiles',
 	#package : 'NewFiles'
 }
@@ -27,9 +30,10 @@ OldFile class >> finalizeResourceData: aHandle [
 ]
 
 { #category : 'primitives - files' }
-OldFile class >> makeWithHandle: handle [
+OldFile class >> makeWithHandle: handle forWrite: isForWrite [
 	| file |
 	file := self fromHandle: handle.
+	file isForWrite: isForWrite.
 	^ file autoRelease
 ]
 
@@ -40,7 +44,7 @@ OldFile class >> openCreateAlways: path [
 	handle := File open: path writable: true.
 	self checkHandle: handle forPath: path.
 	File truncate: handle to: 0.
-	^ self makeWithHandle: handle
+	^ self makeWithHandle: handle forWrite: true
 ]
 
 { #category : 'primitives - files' }
@@ -48,10 +52,62 @@ OldFile class >> openReadOnly: path [
 	| handle |
 	handle := File open: path writable: false.
 	self checkHandle: handle forPath: path.
-	^ self makeWithHandle: handle
+	^ self makeWithHandle: handle forWrite: false
 ]
 
 { #category : 'initialization' }
 OldFile >> close [
 	File close: handle
+]
+
+{ #category : 'accessing' }
+OldFile >> isForWrite [
+
+	^ isForWrite
+]
+
+{ #category : 'accessing' }
+OldFile >> isForWrite: anObject [
+
+	isForWrite := anObject
+]
+
+{ #category : 'accessing' }
+OldFile >> position [
+	^ File getPosition: handle
+]
+
+{ #category : 'accessing' }
+OldFile >> position: newPosition [
+	^ File setPosition: handle to: newPosition
+]
+
+{ #category : 'accessing' }
+OldFile >> size [
+	^ File sizeOf: handle
+]
+
+{ #category : 'accessing' }
+OldFile >> truncate [
+	^ self truncateToSize: 0
+]
+
+{ #category : 'accessing' }
+OldFile >> truncateToSize: newSize [
+	^ File truncate: handle to: newSize
+]
+
+{ #category : 'writing' }
+OldFile >> writeFrom: dataBuffer [
+	^ self writeFrom: dataBuffer offset: 0 withSize: dataBuffer size
+]
+
+{ #category : 'writing' }
+OldFile >> writeFrom: buffer offset: bufferOffset withSize: bufferSize [
+	^ File write: handle from: buffer startingAt: bufferOffset + 1 count: bufferSize
+]
+
+{ #category : 'writing' }
+OldFile >> writeFrom: buffer withSize: bufferSize [
+	^ self writeFrom: buffer offset: 0 withSize: bufferSize
 ]
