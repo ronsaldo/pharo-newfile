@@ -23,6 +23,11 @@ OldFile class >> deleteFile: path [
 	^ File deleteFile: path
 ]
 
+{ #category : 'public' }
+OldFile class >> exists: aPath [
+	^ File exists: aPath
+]
+
 { #category : 'primitives - files' }
 OldFile class >> finalizeResourceData: aHandle [
 	(File closed: aHandle ) ifTrue: [ ^ self ].
@@ -62,6 +67,16 @@ OldFile class >> openReadOnly: path [
 	handle := File open: path writable: false.
 	self checkHandle: handle forPath: path.
 	^ self makeWithHandle: handle forWrite: false
+]
+
+{ #category : 'accessing' }
+OldFile >> atEnd [
+	^ self position >= self size
+]
+
+{ #category : 'as yet unclassified' }
+OldFile >> binaryStream [
+	^ NewBinaryFileStream forFile: self forWrite: self isForWrite
 ]
 
 { #category : 'initialization' }

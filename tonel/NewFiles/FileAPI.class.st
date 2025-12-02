@@ -19,6 +19,11 @@ FileAPI class >> deleteFile: path [
 ]
 
 { #category : 'as yet unclassified' }
+FileAPI class >> exists: path [
+	^ self currentFileClass exists: path
+]
+
+{ #category : 'as yet unclassified' }
 FileAPI class >> openAlways: path [
 	^ self currentFileClass openAlways: path
 ]
