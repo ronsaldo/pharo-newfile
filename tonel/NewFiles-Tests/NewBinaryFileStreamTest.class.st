@@ -236,8 +236,6 @@ NewBinaryFileStreamTest >> testWriteReadInt2 [
 	file := self fileStreamForFileNamed: 'testFile'.
 	file nextPut: 1.
 	file position: 0.
-
-	file := self fileStreamForFileNamed: 'testFile'.
 	self assert: file next equals: 1.
 	file close.
 ]
