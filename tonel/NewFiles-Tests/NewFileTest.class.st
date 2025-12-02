@@ -16,7 +16,7 @@ NewFileTest >> testHelloWorld [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 	file close.
 	
@@ -39,7 +39,7 @@ NewFileTest >> testHelloWorld2 [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 	
 	buffer := ByteArray new: file size.
@@ -61,7 +61,7 @@ NewFileTest >> testHelloWorldAbsolutePath [
 	path := 'test.txt' asFileReference asAbsolute fullName.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 	file close.
 	
@@ -84,7 +84,7 @@ NewFileTest >> testHelloWorldAtFileOffset [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded at: 0.
 	file close.
 	
@@ -107,7 +107,7 @@ NewFileTest >> testHelloWorldAtFileOffset2 [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded at: 0.
 
 	buffer := ByteArray new: file size.
@@ -129,7 +129,7 @@ NewFileTest >> testHelloWorldContents [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 
 	buffer := file contents.
@@ -149,7 +149,7 @@ NewFileTest >> testHelloWorldReadOnlyMemoryMapping [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 
 	memoryMap := file readOnlyMemoryMap.
@@ -171,7 +171,7 @@ NewFileTest >> testTruncate [
 	
 	path := 'test.bin'.
 	
-	file := NewFile openCreateNewAlways: path.
+	file := NewFile openCreateAlways: path.
 	file truncateToSize: 4096.
 	self assert: file size equals: 4096.
 	file close.

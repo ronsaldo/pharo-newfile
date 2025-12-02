@@ -57,13 +57,13 @@ NewFile class >> openAlways: path [
 ]
 
 { #category : 'file open' }
-NewFile class >> openCreateNew: path [
-	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateNew flags: NewFileOpenFlagsNone
+NewFile class >> openCreateAlways: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateAlways flags: NewFileOpenFlagsNone
 ]
 
 { #category : 'file open' }
-NewFile class >> openCreateNewAlways: path [
-	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateAlways flags: NewFileOpenFlagsNone
+NewFile class >> openCreateNew: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateNew flags: NewFileOpenFlagsNone
 ]
 
 { #category : 'file open' }

@@ -8,6 +8,13 @@ Class {
 	#package : 'NewFiles'
 }
 
+{ #category : 'primitives - files' }
+OldFile class >> checkHandle: handle forPath: path [
+	handle ifNil: [ 
+		self error: 'Failed to open file ' , path printString
+	].
+]
+
 { #category : 'primitives - path' }
 OldFile class >> deleteFile: path [
 	^ File deleteFile: path
@@ -27,10 +34,20 @@ OldFile class >> makeWithHandle: handle [
 ]
 
 { #category : 'primitives - files' }
-OldFile class >> openCreateNewAlways: path [
+OldFile class >> openCreateAlways: path [
 
 	| handle |
 	handle := File open: path writable: true.
+	self checkHandle: handle forPath: path.
+	File truncate: handle to: 0.
+	^ self makeWithHandle: handle
+]
+
+{ #category : 'primitives - files' }
+OldFile class >> openReadOnly: path [
+	| handle |
+	handle := File open: path writable: false.
+	self checkHandle: handle forPath: path.
 	^ self makeWithHandle: handle
 ]
 

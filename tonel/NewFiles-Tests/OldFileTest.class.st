@@ -11,7 +11,7 @@ OldFileTest >> testHelloWorld [
 	path := 'test.txt'.
 	text := 'Hello World'.
 	
-	file := OldFile openCreateNewAlways: path.
+	file := OldFile openCreateAlways: path.
 	file writeFrom: text utf8Encoded.
 	file close.
 	
