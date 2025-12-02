@@ -18,7 +18,7 @@ Class {
 	#package : 'NewFiles'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file primitives' }
 NewFile class >> deleteFile: path [
 	^ self primitiveDeleteFile: path
 ]
@@ -39,7 +39,7 @@ NewFile class >> finalizeResourceData: aHandle [
 	aHandle beNull
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
 NewFile class >> open: path mode: mode creationDisposition: creationDisposition flags: flags [
 	| handle file |
 	handle := self primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags.
@@ -51,48 +51,58 @@ NewFile class >> open: path mode: mode creationDisposition: creationDisposition 
 	^ file autoRelease
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
 NewFile class >> openAlways: path [
 	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionOpenAlways flags: NewFileOpenFlagsNone
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
 NewFile class >> openCreateNew: path [
 	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateNew flags: NewFileOpenFlagsNone
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
 NewFile class >> openCreateNewAlways: path [
 	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionCreateAlways flags: NewFileOpenFlagsNone
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
+NewFile class >> openExisting: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionOpenExisting flags: NewFileOpenFlagsNone
+]
+
+{ #category : 'file open' }
 NewFile class >> openReadOnly: path [
 	^ self open: path mode: NewFileOpenModeReadOnly creationDisposition: NewFileCreationDispositionOpenExisting flags: NewFileOpenFlagsNone
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file open' }
+NewFile class >> openTruncateExisting: path [
+	^ self open: path mode: NewFileOpenModeReadWrite creationDisposition: NewFileCreationDispositionTruncateExisting flags: NewFileOpenFlagsNone
+]
+
+{ #category : 'file primitives' }
 NewFile class >> primitiveClose: aFile [
 	<primitive: 'primitiveFileClose' module: 'NewFilePlugin'>
 	^ self primitiveFailed 
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file primitives' }
 NewFile class >> primitiveDeleteFile: path [
 	<primitive: 'primitiveDeleteFile' module: 'NewFilePlugin'>
 	^ self primitiveFailed 
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file primitives' }
 NewFile class >> primitiveIsAvailable [
 	<primitive: 'primitiveIsAvailable' module: 'NewFilePlugin'>
 	^ false
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'file primitives' }
 NewFile class >> primitiveOpen: path mode: mode creationDisposition: creationDisposition flags: flags [
 	<primitive: 'primitiveFileOpen' module: 'NewFilePlugin'>
 	^ self primitiveFailed 
