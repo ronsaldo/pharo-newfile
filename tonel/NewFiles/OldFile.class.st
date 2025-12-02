@@ -38,6 +38,15 @@ OldFile class >> makeWithHandle: handle forWrite: isForWrite [
 ]
 
 { #category : 'primitives - files' }
+OldFile class >> openAlways: path [
+
+	| handle |
+	handle := File open: path writable: true.
+	self checkHandle: handle forPath: path.
+	^ self makeWithHandle: handle forWrite: true
+]
+
+{ #category : 'primitives - files' }
 OldFile class >> openCreateAlways: path [
 
 	| handle |

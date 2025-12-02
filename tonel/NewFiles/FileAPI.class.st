@@ -9,6 +9,31 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+FileAPI class >> currentFileClass [
+	^ self useNewFile ifTrue: [ NewFile ] ifFalse: [ OldFile ]
+]
+
+{ #category : 'as yet unclassified' }
+FileAPI class >> deleteFile: path [
+	^ self currentFileClass deleteFile: path
+]
+
+{ #category : 'as yet unclassified' }
+FileAPI class >> openAlways: path [
+	^ self currentFileClass openAlways: path
+]
+
+{ #category : 'as yet unclassified' }
+FileAPI class >> openCreateAlways: path [
+	^ self currentFileClass openCreateAlways: path
+]
+
+{ #category : 'as yet unclassified' }
+FileAPI class >> openReadOnly: path [
+	^ self currentFileClass openReadOnly: path
+]
+
+{ #category : 'as yet unclassified' }
 FileAPI class >> useNewFile [
 	^ NewFile primitiveIsAvailable
 ]
