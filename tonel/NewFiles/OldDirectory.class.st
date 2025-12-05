@@ -18,7 +18,7 @@ OldDirectory class >> contentsOf: path [
 
 { #category : 'creation and destruction' }
 OldDirectory class >> create: path [
-	self shouldBeImplemented 
+	^ File createDirectory: path
 ]
 
 { #category : 'creation and destruction' }
@@ -28,5 +28,5 @@ OldDirectory class >> open: path [
 
 { #category : 'creation and destruction' }
 OldDirectory class >> removeEmpty: path [
-	self shouldBeImplemented 
+	^ File deleteDirectory: path
 ]

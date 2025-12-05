@@ -28,6 +28,11 @@ DirectoryAPI class >> open: path [
 	^ self currentDirectoryClass open: path
 ]
 
+{ #category : 'api' }
+DirectoryAPI class >> removeEmpty: path [
+	^ self currentDirectoryClass removeEmpty: path
+]
+
 { #category : 'private' }
 DirectoryAPI class >> useNewDirectory [
 	^ NewFile primitiveIsAvailable
